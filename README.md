@@ -20,7 +20,7 @@ In case you need a local cluster providing Kafka, Cassandra and Spark you're at 
 ### Init
 
 ```
-git clone https://github.com/markush81/fastdata-cluster
+git clone https://github.com/markush81/fastdata-cluster.git
 vagrant up
 ```
 
