@@ -36,7 +36,7 @@ The result if everything wents fine should be
 #### Servers
 
 | IP | Hostname | Description | Settings |
-|:--- |:-- |:-- |
+|:--- |:-- |:-- |:-- |
 |192.168.10.2|zookeeper-1|running a zookeeper instance| 1 GB RAM |
 |192.168.10.3|zookeeper-2|running a zookeeper instance| 1 GB RAM |
 |192.168.10.4|zookeeper-3|running a zookeeper instance| 1 GB RAM |
