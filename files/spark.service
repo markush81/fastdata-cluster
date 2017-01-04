@@ -1,0 +1,13 @@
+[Unit]
+Description=Spark Service
+After=network.target
+
+[Service]
+Type=forking
+User=root
+ExecStart=/opt/spark/sbin/start-master.sh
+ExecStop=/opt/spark/sbin/stop-master.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

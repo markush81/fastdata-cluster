@@ -1,0 +1,13 @@
+[Unit]
+Description=Zookeeper Service
+After=network.target
+
+[Service]
+Type=forking
+User=root
+ExecStart=/opt/kafka/zookeeper start
+ExecStop=/opt/kafka/zookeeper stop
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

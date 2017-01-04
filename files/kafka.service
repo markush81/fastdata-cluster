@@ -1,0 +1,13 @@
+[Unit]
+Description=Kafka Service
+After=network.target
+
+[Service]
+Type=forking
+User=root
+ExecStart=/opt/kafka/kafka start
+ExecStop=/opt/kafka/kafka stop
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
