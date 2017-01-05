@@ -45,7 +45,7 @@ start() {
 		  
         # Run daemon
         cd $KAFKA_HOME
-        nohup sh $KAFKA_SCRIPT $KAFKA_CONFIG 2>&1 >> $KAFKA_CONSOLE_LOG 2>&1 &
+        JMX_PORT=9999 nohup sh $KAFKA_SCRIPT $KAFKA_CONFIG 2>&1 >> $KAFKA_CONSOLE_LOG 2>&1 &
         PID=$!
         echo $PID > $KAFKA_PIDFILE
         
