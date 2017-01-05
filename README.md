@@ -19,7 +19,7 @@ In case you need a local cluster providing Kafka, Cassandra and Spark you're at 
 
 ### Init
 
-```
+```bash
 git clone https://github.com/markush81/fastdata-cluster.git
 vagrant up
 ```
@@ -67,7 +67,7 @@ You either can ssh into one of the boxes or if you have all utilities in require
 
 ### Connect to Cassandra
 
-```
+```bash
 lucky:~ markus$ cqlsh 192.168.10.8
 Connected to analytics at 192.168.10.8:9042.
 [cqlsh 5.0.1 | Cassandra 3.9.0 | CQL spec 3.4.2 | Native protocol v4]
@@ -77,7 +77,7 @@ cqlsh>
 
 ### Zookeeper
 
-```
+```bash
 lucky:~ markus$ zookeeper-shell 192.168.10.2:2181,192.168.10.3:2181
 Connecting to 192.168.10.2:2181,192.168.10.3:2181
 Welcome to ZooKeeper!
@@ -104,7 +104,7 @@ ls /brokers/ids
 
 #### Topic Creation
 
-```
+```bash
 lucky:~ markus$ kafka-topics --create --zookeeper 192.168.10.2:2181 --replication-factor 2 --partitions 6 --topic sample
 Created topic "sample".
 lucky:~ markus$ kafka-topics --zookeeper 192.168.10.2 --topic sample --describe
@@ -119,14 +119,14 @@ lucky:~ markus$
 ```
 #### Producer
 
-```
+```bash
 lucky:~ markus$ kafka-console-producer --broker-list 192.168.10.5:9092,192.168.10.6:9092,192.168.10.7:9092 --topic sample
 Hey, is Kafka up and running?
 ```
 
 #### Consumer
 
-```
+```bash
 lucky:~ markus$ kafka-console-consumer --bootstrap-server 192.168.10.5:9092,192.168.10.6:9092,192.168.10.7:9092 --topic sample --from-beginning
 Hey, is Kafka up and running?
 ```
@@ -135,7 +135,7 @@ Hey, is Kafka up and running?
 
 Copy a spark application to `./spark` shared folder.
 
-```
+```bash
 lucky:~ markus$ spark-submit --master spark://192.168.10.8:6066 --class org.mh.playground.spark.StreamingSample --deploy-mode cluster /vagrant/spark/spark-playground-all.jar
 Running Spark using the REST application submission protocol.
 Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
