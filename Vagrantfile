@@ -20,7 +20,7 @@ Vagrant.configure("2") do |config|
   config.vm.box_check_update = false
 
   config.vm.synced_folder "pkgs", "/vagrant/pkgs", create: true
-  config.vm.synced_folder "spark", "/home/vagrant/spark", create: true
+  config.vm.synced_folder "exchange", "/home/vagrant/exchange", create: true
 
 
   config.vm.provider "virtualbox" do |vb|

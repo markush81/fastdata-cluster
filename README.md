@@ -4,7 +4,7 @@
 
 In case you need a local cluster providing Kafka, Cassandra and Spark you're at the right place.
 
-* [Apache Kafka 0.10.1.0](http://kafka.apache.org/0101/documentation.html)
+* [Apache Kafka 0.10.1.1](http://kafka.apache.org/0101/documentation.html)
 * [Apache Spark 2.1.0](http://spark.apache.org/releases/spark-release-2-1-0.html)
 * [Apache Cassandra 3.9 provided by DataStax](https://academy.datastax.com/planet-cassandra/cassandra)
 
@@ -86,7 +86,7 @@ JLine support is disabled
 WATCHER::
 
 WatchedEvent state:SyncConnected type:None path:null
-^Clucky:~ markus$ zookeeper-shell 192.168.10.2:2181,192.168.10.3:2181,192.168.10.4:2181
+lucky:~ markus$ zookeeper-shell 192.168.10.2:2181,192.168.10.3:2181,192.168.10.4:2181
 Connecting to 192.168.10.2:2181,192.168.10.3:2181,192.168.10.4:2181
 Welcome to ZooKeeper!
 JLine support is disabled
@@ -133,10 +133,10 @@ Hey, is Kafka up and running?
 
 ### Spark
 
-Copy a spark application to `./spark` shared folder.
+Copy a spark application to `./exchange` shared folder.
 
 ```bash
-lucky:~ markus$ spark-submit --master spark://192.168.10.8:6066 --class org.mh.playground.spark.StreamingSample --deploy-mode cluster /vagrant/spark/spark-playground-all.jar
+lucky:~ markus$ spark-submit --master spark://192.168.10.8:6066 --class org.mh.playground.spark.StreamingSample --deploy-mode cluster /vagrant/exchange/spark-playground-all.jar
 Running Spark using the REST application submission protocol.
 Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
 17/01/04 13:51:48 INFO RestSubmissionClient: Submitting a request to launch an application in spark://192.168.10.8:6066.

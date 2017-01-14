@@ -1,6 +1,6 @@
 #!/bin/sh
 
-KAFKA_DOWNLOAD="http://mirror.dkd.de/apache/kafka/0.10.1.0/kafka_2.11-0.10.1.0.tgz"
+KAFKA_DOWNLOAD="http://mirror.dkd.de/apache/kafka/0.10.1.1/kafka_2.11-0.10.1.1.tgz"
 NODE=$1
 IP=$2
 
