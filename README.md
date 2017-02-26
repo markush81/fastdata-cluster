@@ -4,7 +4,7 @@
 
 In case you need a local cluster providing Kafka, Cassandra and Spark you're at the right place.
 
-* [Apache Kafka 0.10.1.1](http://kafka.apache.org/0101/documentation.html)
+* [Apache Kafka 0.10.2.0](http://kafka.apache.org/0102/documentation.html)
 * [Apache Spark 2.1.0](http://spark.apache.org/releases/spark-release-2-1-0.html)
 * [Apache Cassandra 3.9 provided by DataStax](https://academy.datastax.com/planet-cassandra/cassandra)
 
@@ -13,7 +13,7 @@ In case you need a local cluster providing Kafka, Cassandra and Spark you're at 
 ### Prerequisites
 
 * [Vagrant](https://www.vagrantup.com) (tested with 1.9.1)
-* [VirtualBox](http://virtualbox.org) (tested with 5.1.12)
+* [VirtualBox](http://virtualbox.org) (tested with 5.1.14)
 * The Nodes take 12 GB of RAM, so you should have much more than that.
 
 
