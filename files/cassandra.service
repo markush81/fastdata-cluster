@@ -1,0 +1,14 @@
+[Unit]
+Description=Cassandra Service
+After=network.target
+
+[Service]
+Type=forking
+User=root
+ExecStart=/opt/cassandra/cassandra start
+ExecStop=/opt/cassandra/cassandra stop
+Restart=always
+TimeoutSec=120
+
+[Install]
+WantedBy=multi-user.target

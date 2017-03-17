@@ -6,7 +6,7 @@ In case you need a local cluster providing Kafka, Cassandra and Spark you're at 
 
 * [Apache Kafka 0.10.2.0](http://kafka.apache.org/0102/documentation.html)
 * [Apache Spark 2.1.0](http://spark.apache.org/releases/spark-release-2-1-0.html)
-* [Apache Cassandra 3.9 provided by DataStax](https://academy.datastax.com/planet-cassandra/cassandra)
+* [Apache Cassandra 3.10](http://cassandra.apache.org)
 
 ## Setup
 
