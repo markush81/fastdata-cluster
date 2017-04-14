@@ -14,7 +14,7 @@ In case you need a local cluster providing Kafka, Cassandra and Spark you're at 
 
 * [Vagrant](https://www.vagrantup.com) (tested with 1.9.1)
 * [VirtualBox](http://virtualbox.org) (tested with 5.1.14)
-* The Nodes take 12 GB of RAM, so you should have much more than that.
+* The Nodes take aprox 16 GB of RAM, so you should have much more than that.
 
 
 ### Init
@@ -37,15 +37,18 @@ The result if everything wents fine should be
 
 | IP | Hostname | Description | Settings |
 |:--- |:-- |:-- |:-- |
-|192.168.10.2|zookeeper-1|running a zookeeper instance| 1 GB RAM |
-|192.168.10.3|zookeeper-2|running a zookeeper instance| 1 GB RAM |
-|192.168.10.4|zookeeper-3|running a zookeeper instance| 1 GB RAM |
+|192.168.10.2|zookeeper-1|running a zookeeper instance| 768 MB RAM |
+|192.168.10.3|zookeeper-2|running a zookeeper instance| 768 MB RAM |
+|192.168.10.4|zookeeper-3|running a zookeeper instance| 768 MB RAM |
 |192.168.10.5|kafka-1|running a kafka broker| 1 GB RAM |
 |192.168.10.6|kafka-2|running a kafka broker| 1 GB RAM |
 |192.168.10.7|kafka-3|running a kafka broker| 1 GB RAM |
-|192.168.10.8|analytics-1|running a cassandra seed node, spark master and a spark slave| 2 GB RAM |
-|192.168.10.9|analytics-2|running a cassandra node and a spark slave| 2 GB RAM |
-|192.168.10.10|analytics-3|running a cassandra seed node and a spark slave| 2 GB RAM |
+|192.168.10.8|cassandra-1|running a cassandra seed node| 1,5 GB RAM |
+|192.168.10.9|cassandra-2|running a cassandra nodee| 1,5 GB RAM |
+|192.168.10.10|cassandra-3|running a cassandra seed node| 1,5 GB RAM |
+|192.168.10.11|analytics-1|running a spark master and a spark slave| 2 GB RAM |
+|192.168.10.12|analytics-2|running a spark slave| 2 GB RAM |
+|192.168.10.13|analytics-3|running a spark slave| 2 GB RAM |
 
 #### Connections
 
@@ -54,9 +57,9 @@ The result if everything wents fine should be
 |Zookeeper|192.168.10.2:2181,192.168.10.3:2181,192.168.10.4:2181|
 |Kafka Brokers|192.168.10.5:9092,192.168.10.6:9092,192.168.10.7:9092|
 |Cassandra Hosts|192.168.10.8,192.168.10.9,192.168.10.10|
-|Spark UI|[http://192.168.10.8:8080](http://192.168.10.8:8080)|
-|Spark REST Submit|spark://192.168.10.8:6066|
-|Spark Master|spark://192.168.10.8:7077|
+|Spark UI|[http://192.168.10.11:8080](http://192.168.10.11:8080)|
+|Spark REST Submit|spark://192.168.10.11:6066|
+|Spark Master|spark://192.168.10.11:7077|
 
 (**Note:** most things are not bound to hostname, but IP for the simple reason that you do not need to setup `/etc/hosts` for your host machine)
 
@@ -136,10 +139,10 @@ Hey, is Kafka up and running?
 Copy a spark application to `./exchange` shared folder.
 
 ```bash
-lucky:~ markus$ spark-submit --master spark://192.168.10.8:6066 --class org.mh.playground.spark.StreamingSample --deploy-mode cluster /vagrant/exchange/spark-playground-all.jar
+lucky:~ markus$ spark-submit --master spark://192.168.10.11:6066 --class org.mh.playground.spark.StreamingSample --deploy-mode cluster /vagrant/exchange/spark-playground-all.jar
 Running Spark using the REST application submission protocol.
 Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
-17/01/04 13:51:48 INFO RestSubmissionClient: Submitting a request to launch an application in spark://192.168.10.8:6066.
+17/01/04 13:51:48 INFO RestSubmissionClient: Submitting a request to launch an application in spark://192.168.10.11:6066.
 17/01/04 13:51:49 INFO RestSubmissionClient: Submission successfully created as driver-20170104135149-0000. Polling submission state...
 17/01/04 13:51:49 INFO RestSubmissionClient: Submitting a request for the status of submission driver-20170104135149-0000 in spark://192.168.10.8:6066.
 17/01/04 13:51:49 INFO RestSubmissionClient: State of driver driver-20170104135149-0000 is now RUNNING.
@@ -154,6 +157,6 @@ Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
 }
 ```
 
-The UI can be accessed by [http://192.168.10.8:8080](http://192.168.10.8:8080), from there you can navigate to your application and it can look like
+The UI can be accessed by [http://192.168.10.11:8080](http://192.168.10.11:8080), from there you can navigate to your application and it can look like
 
 ![Spark running streaming](doc/spark-streaming.png)

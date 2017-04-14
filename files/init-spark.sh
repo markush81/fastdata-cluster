@@ -20,7 +20,7 @@ if ! [ -x "$(command -v spark-submit)" ]; then
 	tar xzf /vagrant/pkgs/$SPARK_TGZ
 	ln -sf spark-* spark
 
-	sed -i -e 's/#.*SPARK_MASTER_HOST.*$/SPARK_MASTER_HOST=192.168.10.8/g' /opt/spark/conf/spark-env.sh.template
+	sed -i -e 's/#.*SPARK_MASTER_HOST.*$/SPARK_MASTER_HOST=192.168.10.11/g' /opt/spark/conf/spark-env.sh.template
 	sed -i -e 's/#.*SPARK_LOCAL_IP.*$/SPARK_LOCAL_IP='$IP'/g' /opt/spark/conf/spark-env.sh.template
 	mv /opt/spark/conf/spark-env.sh.template /opt/spark/conf/spark-env.sh
 	sed -i -e 's/localhost/'$IP'/g' /opt/spark/conf/slaves.template
