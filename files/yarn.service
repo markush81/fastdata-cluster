@@ -1,13 +1,13 @@
 [Unit]
-Description=Kafka Service
+Description=YARN
 After=network.target
 
 [Service]
 Environment=JAVA_HOME=/usr/java/default
 Type=forking
 User=vagrant
-ExecStart=/opt/kafka/kafka start
-ExecStop=/opt/kafka/kafka stop
+ExecStart=/opt/hadoop/sbin/start-yarn.sh
+ExecStop=/opt/hadoop/sbin/stop-yarn.sh
 Restart=always
 
 [Install]

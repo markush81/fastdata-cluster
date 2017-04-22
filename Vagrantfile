@@ -17,6 +17,8 @@ echo \"192.168.10.12 analytics-2 analytics-2\" >> /etc/hosts
 echo \"192.168.10.13 analytics-3 analytics-3\" >> /etc/hosts
 SCRIPT
 
+
+
 Vagrant.configure("2") do |config|
 
   config.vm.box = "markush81/centos7-vbox-guestadditions"
@@ -28,7 +30,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision :shell, inline: $hosts
   config.vm.provision :shell, inline: "ifup eth1", run: "always"
-  config.vm.provision :shell, path: "files/init-java.sh"
+  config.vm.provision :shell, path: "files/init-java.sh" 
   
   (1..3).each do |i|
     config.vm.define "zookeeper-#{i}" do |zookeeper|
@@ -38,7 +40,7 @@ Vagrant.configure("2") do |config|
         vb.cpus = "1"
       end
       zookeeper.vm.network :private_network, ip: "192.168.10.#{1+i}", auto_config: true
-      zookeeper.vm.provision :shell, path: "files/init-zookeeper.sh", args: ["#{i}", "192.168.10.#{1+i}"]
+      zookeeper.vm.provision :shell, path: "files/init-zookeeper.sh", args: ["#{i}", "192.168.10.#{1+i}"], privileged: false  
     end
   end
   
@@ -50,7 +52,7 @@ Vagrant.configure("2") do |config|
         vb.cpus = "1"
       end
       kafka.vm.network :private_network, ip: "192.168.10.#{4+i}", auto_config: true
-      kafka.vm.provision :shell, path: "files/init-kafka.sh", args: ["#{i}", "192.168.10.#{4+i}"]
+      kafka.vm.provision :shell, path: "files/init-kafka.sh", args: ["#{i}", "192.168.10.#{4+i}"], privileged: false  
     end
   end
   
@@ -62,11 +64,11 @@ Vagrant.configure("2") do |config|
         vb.cpus = "1"
       end
       cassandra.vm.network :private_network, ip: "192.168.10.#{7+i}", auto_config: true
-      cassandra.vm.provision :shell, path: "files/init-cassandra.sh", args: ["#{i}", "192.168.10.#{7+i}"]
+      cassandra.vm.provision :shell, path: "files/init-cassandra.sh", args: ["#{i}", "192.168.10.#{7+i}"], privileged: false  
     end
   end
-  
-  (1..3).each do |i|
+    
+  (3).downto(1).each do |i|
     config.vm.define "analytics-#{i}" do |analytics|
       analytics.vm.hostname = "analytics-#{i}"
       analytics.vm.provider "virtualbox" do |vb|
@@ -74,8 +76,11 @@ Vagrant.configure("2") do |config|
         vb.cpus = "2"
       end
       analytics.vm.network :private_network, ip: "192.168.10.#{10+i}", auto_config: true
-      analytics.vm.provision :shell, path: "files/init-spark.sh", args: ["#{i}", "192.168.10.#{10+i}"]   
+      analytics.vm.provision :shell, path: "files/init-hadoop.sh", args: ["#{i}", "192.168.10.#{10+i}"], privileged: false
+      
+      if i == 1
+        analytics.vm.provision :shell, path: "files/init-spark.sh", args: ["1", "192.168.10.#{10+i}"], privileged: false 
+      end
     end
   end
-
 end

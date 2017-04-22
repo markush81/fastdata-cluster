@@ -14,21 +14,23 @@ if ! [ -x "$(command -v kafka-server-start.sh)" ]; then
 	fi
 
 	cd /opt
-	rm -rf cassandra*
+	sudo rm -rf cassandra*
 
-	tar xzf /vagrant/pkgs/$CASSSANDRA_TGZ
-	ln -sf apache-cassandra-* cassandra
+	sudo tar xzf /vagrant/pkgs/$CASSSANDRA_TGZ
+	sudo ln -sf apache-cassandra-* cassandra
+	sudo chown vagrant:vagrant -R /opt/*cassandra*
+	
+	sudo mkdir -p /var/cassandra
+	sudo chown vagrant:vagrant -R /var/cassandra
 
 	cp /vagrant/files/cassandra /opt/cassandra
 	chmod +x /opt/cassandra/cassandra
-	cp /vagrant/files/cassandra.service /etc/systemd/system
-	chmod 664 /etc/systemd/system/cassandra.service
 	
-	systemctl daemon-reload
-	systemctl enable cassandra
-  
-	rm -rf /var/cassandra/log
-	mkdir -p /var/cassandra/log
+	sudo cp /vagrant/files/cassandra.service /etc/systemd/system
+	sudo chmod 664 /etc/systemd/system/cassandra.service
+	
+	sudo systemctl daemon-reload
+	sudo systemctl enable cassandra
 
 	sed -i -e 's/cluster_name.*$/cluster_name: 'analytics'/g' /opt/cassandra/conf/cassandra.yaml
 	sed -i -e 's/.*seeds.*127.*$/          - seeds: "192.168.10.8, 192.168.10.10"/g' /opt/cassandra/conf/cassandra.yaml
@@ -37,9 +39,7 @@ if ! [ -x "$(command -v kafka-server-start.sh)" ]; then
 	sed -i -e 's/^.*broadcast_rpc_address:.*$/broadcast_rpc_address: '$IP'/g' /opt/cassandra/conf/cassandra.yaml
 	sed -i -e 's/endpoint_snitch:.*$/endpoint_snitch: GossipingPropertyFileSnitch/g' /opt/cassandra/conf/cassandra.yaml
 
-	systemctl enable cassandra
+	sed -i -e 's/PATH=.*$/PATH=$PATH:\/opt\/cassandra\/bin/g' ~/.bash_profile
 fi
 
-sed -i -e '/127.0.0.1.*analytics-'$NODE'/d' /etc/hosts
-
-systemctl start cassandra
+sudo systemctl start cassandra

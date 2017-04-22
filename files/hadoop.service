@@ -1,13 +1,13 @@
 [Unit]
-Description=Kafka Service
+Description=HDFS
 After=network.target
 
 [Service]
 Environment=JAVA_HOME=/usr/java/default
 Type=forking
 User=vagrant
-ExecStart=/opt/kafka/kafka start
-ExecStop=/opt/kafka/kafka stop
+ExecStart=/opt/hadoop/sbin/start-dfs.sh
+ExecStop=/opt/hadoop/sbin/stop-dfs.sh
 Restart=always
 
 [Install]

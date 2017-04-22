@@ -3,7 +3,7 @@
 CASSANDRA_HOME=/opt/cassandra
 CASSANDRA_USER=root
 CASSANDRA_SCRIPT=$CASSANDRA_HOME/bin/cassandra
-CASSANDRA_CONSOLE_LOG=/var/cassandra/log/console.log
+CASSANDRA_CONSOLE_LOG=/var/cassandra/logs/console.log
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin
 

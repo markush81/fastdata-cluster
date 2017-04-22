@@ -1,10 +1,10 @@
 #!/bin/sh
 
-ZK_HOME=/opt/kafka
+ZK_HOME=/opt/zookeeper
 ZK_USER=root
 ZK_SCRIPT=$ZK_HOME/bin/zookeeper-server-start.sh
 ZK_CONFIG=$ZK_HOME/config/zookeeper.properties
-ZK_CONSOLE_LOG=/var/zookeeper/log/console.log
+ZK_CONSOLE_LOG=/var/zookeeper/logs/console.log
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin
 

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<configuration>
+	<property>
+		<name>yarn.resourcemanager.hostname</name>
+		<value>192.168.10.11</value>
+	</property>
+
+    <property>
+           <name>yarn.log-aggregation-enable</name>
+           <value>true</value>
+    </property>
+	
+	<property>
+		<name>yarn.nodemanager.hostname</name>
+		<value>NODEMANAGERIP</value>
+	</property>
+	<property>
+		<name>yarn.nodemanager.resource.memory-mb</name>
+		<value>1536</value>
+	</property>
+</configuration>

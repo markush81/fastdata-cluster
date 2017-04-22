@@ -4,7 +4,7 @@ KAFKA_HOME=/opt/kafka
 KAFKA_USER=root
 KAFKA_SCRIPT=$KAFKA_HOME/bin/kafka-server-start.sh
 KAFKA_CONFIG=$KAFKA_HOME/config/server.properties
-KAFKA_CONSOLE_LOG=/var/kafka/log/console.log
+KAFKA_CONSOLE_LOG=/var/kafka/logs/console.log
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin
 

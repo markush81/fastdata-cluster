@@ -3,10 +3,11 @@ Description=Zookeeper Service
 After=network.target
 
 [Service]
+Environment=JAVA_HOME=/usr/java/default
 Type=forking
-User=root
-ExecStart=/opt/kafka/zookeeper start
-ExecStop=/opt/kafka/zookeeper stop
+User=vagrant
+ExecStart=/opt/zookeeper/zookeeper start
+ExecStop=/opt/zookeeper/zookeeper stop
 Restart=always
 
 [Install]
