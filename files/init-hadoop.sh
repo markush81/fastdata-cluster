@@ -1,6 +1,6 @@
 #!/bin/sh
 
-HADOOP_DOWNLOAD="http://apache.mirrors.spacedump.net/hadoop/common/stable/hadoop-2.7.3.tar.gz"
+HADOOP_DOWNLOAD="http://apache.mirrors.spacedump.net/hadoop/common/hadoop-2.8.0/hadoop-2.8.0.tar.gz"
 NODE=$1
 IP=$2
 
@@ -62,10 +62,8 @@ if ! [ -x "$(command -v yarn)" ]; then
   
 	sed -i -e 's/PATH=.*$/&:\/opt\/hadoop\/bin:\/opt\/hadoop\/sbin/g' ~/.bash_profile
 
-	echo "HADOOP_PREFIX=/opt/hadoop" >> ~/.bash_profile
-	echo "export HADOOP_PREFIX" >> ~/.bash_profile
-	echo "HADOOP_CONF_DIR=/opt/hadoop/etc/hadoop" >> ~/.bash_profile
-	echo "export HADOOP_CONF_DIR" >> ~/.bash_profile
+	echo "export HADOOP_PREFIX=/opt/hadoop" >> ~/.bash_profile
+	echo "export HADOOP_CONF_DIR=/opt/hadoop/etc/hadoop" >> ~/.bash_profile
 fi
 
 if [ $NODE -eq 1 ]; then

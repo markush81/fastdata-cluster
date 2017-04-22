@@ -8,6 +8,5 @@ if ! [ -x "$(command -v java)" ]; then
 	fi
 	rpm -i jdk-8u111-linux-x64.rpm
 	
-	echo "JAVA_HOME=/usr/java/default" >> /etc/profile.d/java.sh
-	echo "export JAVA_HOME" >> /etc/profile.d/java.sh
+	echo "export JAVA_HOME=/usr/java/default" >> /etc/profile.d/java.sh
 fi

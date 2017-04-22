@@ -7,6 +7,7 @@ In case you need a local cluster providing Kafka, Cassandra and Spark you're at 
 * [Apache Kafka 0.10.2.0](http://kafka.apache.org/0102/documentation.html)
 * [Apache Spark 2.1.0](http://spark.apache.org/releases/spark-release-2-1-0.html)
 * [Apache Cassandra 3.10](http://cassandra.apache.org)
+* [Apache Hadoop 2.8.0](https://hadoop.apache.org/docs/r2.8.0/)
 
 ## Prerequisites
 
@@ -56,6 +57,7 @@ The result if everything wents fine should be
 |Kafka Brokers|192.168.10.5:9092,192.168.10.6:9092,192.168.10.7:9092|
 |Cassandra Hosts|192.168.10.8,192.168.10.9,192.168.10.10|
 |YARN Resource Manager|[http://192.168.10.11:8088](http://192.168.10.11:8088)|
+|HDFS Namenode UI|[http://192.168.10.11:50070](http://192.168.10.11:50070)|
 
 (**Note:** most things are not bound to hostname, but IP for the simple reason that you do not need to setup `/etc/hosts` for your host machine)
 
@@ -148,7 +150,7 @@ lucky:~ markus$ vagrant ssh analytics-1
 For running your own packages, copy them to `./exchange` which is mapped inside to `/vagrant/exchange`:
 
 ```bash
-spark-submit --master yarn --class org.mh.playground.spark.StreamingSample --conf spark.yarn.submit.waitAppCompletion=false --deploy-mode cluster --executor-memory 1G --num-executors 3 /vagrant/exchange/spark-0.1.0-all.jar
+spark-submit --master yarn --class org.mh.playground.spark.StreamingSample --conf spark.yarn.submit.waitAppCompletion=false --deploy-mode cluster --executor-memory 1G --num-executors 3 /vagrant/exchange/spark-playground-all.jar
 ```
 
 The YARN ResourceManager UI can be accessed by [http://192.168.10.11:8088](http://192.168.10.11:8088), from there you can navigate to your application .
@@ -165,6 +167,6 @@ The YARN ResourceManager UI can be accessed by [http://192.168.10.11:8088](http:
 
 ## Known Issues
 
-Since starting hdfs via systemd is not yet working properly `start-dfs.sh` is executed manually as last step. This means there is no controlled shutdown or startup in case of restart!
+Since starting hdfs via systemd is not yet working properly (see also [here](http://hadoop-common.472056.n3.nabble.com/Manual-Installation-CentOS-7-SystemD-Unit-Files-Hadoop-at-boot-td4108321.html#a4108518)), `start-dfs.sh` is executed manually as last step. This means there is no controlled shutdown or startup in case of restart!
 
 Executing `start-dfs.sh` via system leads to `ERROR org.apache.hadoop.hdfs.server.namenode.NameNode: RECEIVED SIGNAL 15: SIGTERM` for namenode as well as datanodes.
