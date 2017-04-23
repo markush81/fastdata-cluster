@@ -60,8 +60,13 @@ if ! [ -x "$(command -v yarn)" ]; then
   
 	cp /vagrant/files/core-site.xml /opt/hadoop/etc/hadoop/core-site.xml
   
-	sed -i -e 's/PATH=.*$/&:\/opt\/hadoop\/bin:\/opt\/hadoop\/sbin/g' ~/.bash_profile
+	sed -i -e 's/^#.*HADOOP_HEAPSIZE.*/export HADOOP_HEAPSIZE=384/g' /opt/hadoop/etc/hadoop/hadoop-env.sh
+	sed -i -e 's/^#.*HADOOP_NAMENODE_INIT_HEAPSIZE.*/export HADOOP_NAMENODE_INIT_HEAPSIZE=384/g' /opt/hadoop/etc/hadoop/hadoop-env.sh
+	
+	sed -i -e 's/^#.*YARN_HEAPSIZE.*/export YARN_HEAPSIZE=384/g' /opt/hadoop/etc/hadoop/yarn-env.sh
 
+
+	sed -i -e 's/PATH=.*$/&:\/opt\/hadoop\/bin:\/opt\/hadoop\/sbin/g' ~/.bash_profile
 	echo "export HADOOP_PREFIX=/opt/hadoop" >> ~/.bash_profile
 	echo "export HADOOP_CONF_DIR=/opt/hadoop/etc/hadoop" >> ~/.bash_profile
 fi

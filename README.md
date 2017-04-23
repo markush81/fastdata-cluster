@@ -8,12 +8,13 @@ In case you need a local cluster providing Kafka, Cassandra and Spark you're at 
 * [Apache Spark 2.1.0](http://spark.apache.org/releases/spark-release-2-1-0.html)
 * [Apache Cassandra 3.10](http://cassandra.apache.org)
 * [Apache Hadoop 2.8.0](https://hadoop.apache.org/docs/r2.8.0/)
+* [Apache Flink 1.2.0](https://ci.apache.org/projects/flink/flink-docs-release-1.2)
 
 ## Prerequisites
 
 * [Vagrant](https://www.vagrantup.com) (tested with 1.9.1)
 * [VirtualBox](http://virtualbox.org) (tested with 5.1.14)
-* The Nodes take aprox 16 GB of RAM, so you should have much more than that.
+* The vms take approx 18 GB of RAM, so you should have more than that.
 
 
 ## Init
@@ -36,18 +37,18 @@ The result if everything wents fine should be
 
 | IP | Hostname | Description | Settings |
 |:--- |:-- |:-- |:-- |
-|192.168.10.2|zookeeper-1|running a zookeeper instance| 768 MB RAM |
-|192.168.10.3|zookeeper-2|running a zookeeper instance| 768 MB RAM |
-|192.168.10.4|zookeeper-3|running a zookeeper instance| 768 MB RAM |
-|192.168.10.5|kafka-1|running a kafka broker| 1 GB RAM |
-|192.168.10.6|kafka-2|running a kafka broker| 1 GB RAM |
-|192.168.10.7|kafka-3|running a kafka broker| 1 GB RAM |
-|192.168.10.8|cassandra-1|running a cassandra seed node| 1,5 GB RAM |
-|192.168.10.9|cassandra-2|running a cassandra nodee| 1,5 GB RAM |
-|192.168.10.10|cassandra-3|running a cassandra seed node| 1,5 GB RAM |
-|192.168.10.11|analytics-1|running a yarn resourcemanager and nodemanager, hdfs namenode, spark binaries| 2 GB RAM |
-|192.168.10.12|analytics-2|running a yarn nodemanager, hdfs datanode | 2 GB RAM |
-|192.168.10.13|analytics-3|running a yarn nodemanager, hdfs datanode | 2 GB RAM |
+|192.168.10.2|zookeeper-1|running a zookeeper instance| 512 MB RAM |
+|192.168.10.3|zookeeper-2|running a zookeeper instance| 512 MB RAM |
+|192.168.10.4|zookeeper-3|running a zookeeper instance| 512 MB RAM |
+|192.168.10.5|kafka-1|running a kafka broker| 1024 MB RAM |
+|192.168.10.6|kafka-2|running a kafka broker| 1024 MB RAM |
+|192.168.10.7|kafka-3|running a kafka broker| 1024 MB RAM |
+|192.168.10.8|cassandra-1|running a cassandra seed node| 1024 MB RAM |
+|192.168.10.9|cassandra-2|running a cassandra nodee| 1024 MB RAM |
+|192.168.10.10|cassandra-3|running a cassandra seed node| 1024 MB RAM |
+|192.168.10.11|analytics-1|running a yarn resourcemanager and nodemanager, hdfs namenode, spark distribution, flink distribution| 3584 MB RAM |
+|192.168.10.12|analytics-2|running a yarn nodemanager, hdfs datanode | 3072 MB RAM |
+|192.168.10.13|analytics-3|running a yarn nodemanager, hdfs datanode | 3072 MB RAM |
 
 ### Connections
 
@@ -140,22 +141,12 @@ Hey, is Kafka up and running?
 Hey, is Kafka up and running?
 ```
 
-## Spark
-
-```bash
-lucky:~ markus$ vagrant ssh analytics-1
-[vagrant@analytics-1 ~]$ spark-submit --master yarn --class org.apache.spark.examples.SparkPi --deploy-mode cluster --executor-memory 1G --num-executors 3 /opt/spark/examples/jars/spark-examples_2.11-2.1.0.jar 1000
-```
-
-For running your own packages, copy them to `./exchange` which is mapped inside to `/vagrant/exchange`:
-
-```bash
-spark-submit --master yarn --class org.mh.playground.spark.StreamingSample --conf spark.yarn.submit.waitAppCompletion=false --deploy-mode cluster --executor-memory 1G --num-executors 3 /vagrant/exchange/spark-playground-all.jar
-```
+## YARN
 
 The YARN ResourceManager UI can be accessed by [http://192.168.10.11:8088](http://192.168.10.11:8088), from there you can navigate to your application .
 
 ![YARN](doc/yarn.png)
+
 
 **Note:** To fully use the UI you need to add following to your local `/etc/hosts` file, cause the ui mostly translates URLs to the hostnames:
 
@@ -165,8 +156,81 @@ The YARN ResourceManager UI can be accessed by [http://192.168.10.11:8088](http:
 192.168.10.13 analytics-3
 ```
 
+## Spark
+
+### Spark Examples
+
+```bash
+lucky:~ markus$ vagrant ssh analytics-1
+[vagrant@analytics-1 ~]$ spark-submit --master yarn --class org.apache.spark.examples.SparkPi --deploy-mode cluster --executor-memory 1G --num-executors 3 /opt/spark/examples/jars/spark-examples_2.11-2.1.0.jar 1000
+```
+
+### Own Spark Streaming Job
+
+For running your own packages (e.g. from [Spark Playground](https://github.com/markush81/spark-playground/blob/master/doc/StreamingSample.md)), copy them to `./exchange` which is mapped inside to `/vagrant/exchange`:
+
+In order to run this example, prepare Cassandra first
+
+```bash
+lucky:fastdata-cluster markus$ vagrant ssh cassandra-1
+[vagrant@cassandra-1 ~]$ cqlsh
+Connected to analytics at 127.0.0.1:9042.
+[cqlsh 5.0.1 | Cassandra 3.10 | CQL spec 3.4.4 | Native protocol v4]
+Use HELP for help.
+cqlsh> CREATE KEYSPACE sample WITH REPLICATION = { 'class' : 'NetworkTopologyStrategy', 'dc1' : 2  };
+cqlsh> CREATE TABLE sample.wordcount (
+   ...     time timestamp,
+   ...     count bigint,
+   ...     PRIMARY KEY (time));
+```
+
+Next submit the application to YARN:
+
+```bash
+spark-submit --master yarn --class org.mh.playground.spark.StreamingSample --conf spark.yarn.submit.waitAppCompletion=false --deploy-mode cluster --executor-memory 1G --num-executors 3 /vagrant/exchange/spark-playground-all.jar
+```
+
+Produce records into Kafka:
+
+```bash
+lucky:fastdata-cluster markus$ vagrant ssh kafka-1
+[vagrant@kafka-1 ~]$ kafka-producer-perf-test.sh --producer-props bootstrap.servers="kafka-1:9092,kafka-2:9092,kafka-3:9092" --topic sample --num-records 2000 --throughput 100 --record-size 256
+
+```
+
+Finally should look similar to this:
+
+![Spark Streaming Applicaton Master](doc/spark-streaming.png)
+
+## Flink
+
+### Flink Examples
+
+You can find Flink Web UI via YARN, e.g. [http://analytics-1:8088/proxy/application_1492940607011_0001/#/overview](http://analytics-1:8088/proxy/application_1492940607011_0001/#/overview)
+
+Submit a job:
+
+```bash
+[vagrant@analytics-1 ~]$ flink run /opt/flink/examples/streaming/WordCount.jar
+```
+
+![Flink](doc/flink.png)
+
 ## Known Issues
+
+### HDFS
 
 Since starting hdfs via systemd is not yet working properly (see also [here](http://hadoop-common.472056.n3.nabble.com/Manual-Installation-CentOS-7-SystemD-Unit-Files-Hadoop-at-boot-td4108321.html#a4108518)), `start-dfs.sh` is executed manually as last step. This means there is no controlled shutdown or startup in case of restart!
 
 Executing `start-dfs.sh` via system leads to `ERROR org.apache.hadoop.hdfs.server.namenode.NameNode: RECEIVED SIGNAL 15: SIGTERM` for namenode as well as datanodes.
+
+### Flink
+
+Since starting flink via system keeps in restarting, it is now manually started `/opt/flink/bin/yarn-session.sh -n 3 -jm 768 -tm 768 -s 2 -d` while provisioning the vm. This means there is no controlled shutdown or startup in case of restart!
+
+## Further Link
+
+- [yarn-default.xml](https://hadoop.apache.org/docs/r2.8.0/hadoop-yarn/hadoop-yarn-common/yarn-default.xml)
+- [core-default.xml](https://hadoop.apache.org/docs/r2.8.0/hadoop-project-dist/hadoop-common/core-default.xml)
+- [hdfs-default.xml](https://hadoop.apache.org/docs/r2.8.0/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml)
+

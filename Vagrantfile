@@ -36,7 +36,7 @@ Vagrant.configure("2") do |config|
     config.vm.define "zookeeper-#{i}" do |zookeeper|
       zookeeper.vm.hostname = "zookeeper-#{i}"
       zookeeper.vm.provider "virtualbox" do |vb|
-        vb.memory = "768"
+        vb.memory = "512"
         vb.cpus = "1"
       end
       zookeeper.vm.network :private_network, ip: "192.168.10.#{1+i}", auto_config: true
@@ -71,15 +71,23 @@ Vagrant.configure("2") do |config|
   (3).downto(1).each do |i|
     config.vm.define "analytics-#{i}" do |analytics|
       analytics.vm.hostname = "analytics-#{i}"
-      analytics.vm.provider "virtualbox" do |vb|
-        vb.memory = "2048"
-        vb.cpus = "2"
+      if i == 1
+        analytics.vm.provider "virtualbox" do |vb|
+          vb.memory = "3584"
+          vb.cpus = "2"
+        end
+      else 
+        analytics.vm.provider "virtualbox" do |vb|
+          vb.memory = "3072"
+          vb.cpus = "2"
+        end
       end
       analytics.vm.network :private_network, ip: "192.168.10.#{10+i}", auto_config: true
       analytics.vm.provision :shell, path: "files/init-hadoop.sh", args: ["#{i}", "192.168.10.#{10+i}"], privileged: false
       
       if i == 1
         analytics.vm.provision :shell, path: "files/init-spark.sh", args: ["1", "192.168.10.#{10+i}"], privileged: false 
+        analytics.vm.provision :shell, path: "files/init-flink.sh", args: ["1", "192.168.10.#{10+i}"], privileged: false 
       end
     end
   end
