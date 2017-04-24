@@ -60,8 +60,6 @@ The result if everything wents fine should be
 |YARN Resource Manager|[http://192.168.10.11:8088](http://192.168.10.11:8088)|
 |HDFS Namenode UI|[http://192.168.10.11:50070](http://192.168.10.11:50070)|
 
-(**Note:** most things are not bound to hostname, but IP for the simple reason that you do not need to setup `/etc/hosts` for your host machine)
-
 
 # Usage
 
@@ -198,7 +196,7 @@ lucky:fastdata-cluster markus$ vagrant ssh kafka-1
 
 ```
 
-Finally should look similar to this:
+Finally it should look similar to this:
 
 ![Spark Streaming Applicaton Master](doc/spark-streaming.png)
 
@@ -228,9 +226,11 @@ Executing `start-dfs.sh` via system leads to `ERROR org.apache.hadoop.hdfs.serve
 
 Since starting flink via system keeps in restarting, it is now manually started `/opt/flink/bin/yarn-session.sh -n 3 -jm 768 -tm 768 -s 2 -d` while provisioning the vm. This means there is no controlled shutdown or startup in case of restart!
 
-## Further Link
+## Further Links
 
 - [yarn-default.xml](https://hadoop.apache.org/docs/r2.8.0/hadoop-yarn/hadoop-yarn-common/yarn-default.xml)
 - [core-default.xml](https://hadoop.apache.org/docs/r2.8.0/hadoop-project-dist/hadoop-common/core-default.xml)
 - [hdfs-default.xml](https://hadoop.apache.org/docs/r2.8.0/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml)
+- [Spark Documentation](https://spark.apache.org/docs/2.1.0/)
+- [Apache Cassandra Documentation 3.9](http://cassandra.apache.org/doc/3.9/)
 
