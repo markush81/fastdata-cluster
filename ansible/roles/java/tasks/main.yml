@@ -1,0 +1,37 @@
+---
+- name: download {{ url }}
+  get_url:
+    url: "{{url}}"
+    headers: 'Cookie:oraclelicense=accept-securebackup-cookie'
+    dest: "{{ download }}/{{ file }}"
+
+- name: extract {{ download }}/{{ file }}
+  become: yes
+  become_method: sudo
+  unarchive:
+    owner: root
+    group: root
+    src: "{{ download }}/{{ file }}"
+    dest: "{{ usr_local }}"
+    copy: no
+    creates: "{{ java_home }}"
+
+- name: set JAVA_HOME={{ java_home }}
+  become: yes
+  become_method: sudo
+  lineinfile: 
+    dest: /etc/profile.d/java.sh 
+    create: yes
+    state: present 
+    regexp: '^JAVA_HOME'
+    line: 'JAVA_HOME={{ java_home }}'
+
+- name: set PATH=$PATH:{{ java_home }}/bin
+  become: yes
+  become_method: sudo
+  lineinfile: 
+    dest: /etc/profile.d/java.sh 
+    create: yes
+    state: present 
+    regexp: '^PATH' 
+    line: 'PATH=$PATH:$JAVA_HOME/bin'

@@ -1,0 +1,3 @@
+download: /vagrant/download
+usr_local: /usr/local
+java_home: "{{ usr_local }}/{{ jdk }}"

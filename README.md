@@ -14,7 +14,11 @@ In case you need a local cluster providing Kafka, Cassandra and Spark you're at 
 
 * [Vagrant](https://www.vagrantup.com) (tested with 1.9.1)
 * [VirtualBox](http://virtualbox.org) (tested with 5.1.14)
+* [Ansible](http://docs.ansible.com/ansible/index.html) (tested with 2.3.0.0)
 * The vms take approx 18 GB of RAM, so you should have more than that.
+
+
+![Warning](doc/warning.png) Vagrant migh ask you for your admin password. The rational behing is, that `vagrant-hostsupdater` is used to have the vms available with their names in your network.
 
 
 ## Init
@@ -144,15 +148,6 @@ Hey, is Kafka up and running?
 The YARN ResourceManager UI can be accessed by [http://192.168.10.11:8088](http://192.168.10.11:8088), from there you can navigate to your application .
 
 ![YARN](doc/yarn.png)
-
-
-**Note:** To fully use the UI you need to add following to your local `/etc/hosts` file, cause the ui mostly translates URLs to the hostnames:
-
-```bash
-192.168.10.11 analytics-1
-192.168.10.12 analytics-2
-192.168.10.13 analytics-3
-```
 
 ## Spark
 

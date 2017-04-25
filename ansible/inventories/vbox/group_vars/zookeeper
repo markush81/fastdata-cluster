@@ -1,0 +1,1 @@
+zookeeper_home: "{{ usr_local }}/{{ zookeeper }}"

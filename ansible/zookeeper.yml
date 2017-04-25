@@ -1,0 +1,5 @@
+- hosts: zookeeper
+  remote_user: vagrant
+  roles:
+    - java
+    - zookeeper

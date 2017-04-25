@@ -1,0 +1,4 @@
+---
+zookeeper: zookeeper-3.4.10
+file: "{{ zookeeper }}.tar.gz"
+url: http://ftp-stud.hs-esslingen.de/pub/Mirrors/ftp.apache.org/dist/zookeeper/{{ zookeeper }}/{{ zookeeper }}.tar.gz
