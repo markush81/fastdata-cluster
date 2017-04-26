@@ -1,1 +1,6 @@
 zookeeper_home: "{{ usr_local }}/{{ zookeeper }}"
+zookeeper_data_dir: /var/zookeeper/data
+zookeeper_nodes: |
+  server.1=zookeeper-1
+  server.2=zookeeper-2
+  server.3=zookeeper-3

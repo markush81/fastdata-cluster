@@ -15,16 +15,6 @@
     copy: no
     creates: "{{ zookeeper_home }}"
 
-#- name: set JAVA_HOME={{ java_home }}
-#  become: yes
-#  become_method: sudo
-#  lineinfile: 
-#    dest: /etc/profile.d/zookeeper.sh 
-#    create: yes
-#    state: present 
-#    regexp: '^JAVA_HOME'
-#    line: 'JAVA_HOME={{ java_home }}'
-
 - name: set PATH=$PATH:{{ zookeeper_home }}/bin
   become: yes
   become_method: sudo
@@ -34,3 +24,18 @@
     state: present 
     regexp: '^PATH' 
     line: 'PATH=$PATH:{{ zookeeper_home }}/bin'
+
+- name: copy zoo.cfg to {{ zookeeper_home }}/conf/zoo.cfg
+  become: yes
+  become_method: sudo
+  template:
+    src: templates/zoo.cfg.j2
+    dest: "{{ zookeeper_home }}/conf/zoo.cfg"
+
+- name: create myid in {{ zookeeper_data_dir }} for {{ inventory_hostname | regex_replace('[a-zA-Z-]+','') }}
+  become: yes
+  become_method: sudo
+  copy: 
+    content: "{{ inventory_hostname | regex_replace('[a-zA-Z-]+','') }}"
+    dest: "{{ zookeeper_data_dir }}/myid"
+    force: yes
