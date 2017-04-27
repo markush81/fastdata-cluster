@@ -20,7 +20,7 @@
   become: yes
   become_method: sudo
   lineinfile: 
-    dest: /etc/profile.d/java.sh 
+    dest: "{{ etc_profiles }}/java.sh"
     create: yes
     state: present 
     regexp: '^JAVA_HOME'
@@ -30,7 +30,7 @@
   become: yes
   become_method: sudo
   lineinfile: 
-    dest: /etc/profile.d/java.sh 
+    dest: "{{ etc_profiles }}/java.sh"
     create: yes
     state: present 
     regexp: '^PATH' 

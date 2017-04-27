@@ -1,3 +1,5 @@
 download: /vagrant/download
 usr_local: /usr/local
+etc_profiles: /etc/profile.d
+system_units: /etc/systemd/system
 java_home: "{{ usr_local }}/{{ jdk }}"

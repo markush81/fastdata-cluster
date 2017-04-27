@@ -19,7 +19,7 @@
   become: yes
   become_method: sudo
   lineinfile: 
-    dest: /etc/profile.d/zookeeper.sh 
+    dest: "{{ etc_profiles }}/zookeeper.sh"
     create: yes
     state: present 
     regexp: '^PATH' 
@@ -32,6 +32,20 @@
     src: templates/zoo.cfg.j2
     dest: "{{ zookeeper_home }}/conf/zoo.cfg"
 
+- name: create {{ zookeeper_data_dir }}
+  become: yes
+  become_method: sudo
+  file:
+    path: "{{ zookeeper_data_dir }}"
+    state: directory
+
+- name: create {{ zookeeper_log_dir }}
+  become: yes
+  become_method: sudo
+  file:
+    path: "{{ zookeeper_log_dir }}"
+    state: directory
+
 - name: create myid in {{ zookeeper_data_dir }} for {{ inventory_hostname | regex_replace('[a-zA-Z-]+','') }}
   become: yes
   become_method: sudo
@@ -39,3 +53,20 @@
     content: "{{ inventory_hostname | regex_replace('[a-zA-Z-]+','') }}"
     dest: "{{ zookeeper_data_dir }}/myid"
     force: yes
+
+- name: install zookeeper systemd unit file
+  become: yes
+  become_method: sudo
+  template:
+    src: templates/zookeeper.service.j2
+    dest: "{{ system_units }}/zookeeper.service"
+
+- name: start zookeeper
+  become: yes
+  become_method: sudo
+  systemd:
+    state: started
+    name: zookeeper
+    daemon_reload: yes
+  tags:
+    - start
