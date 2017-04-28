@@ -14,12 +14,11 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "exchange", "/home/vagrant/exchange", create: true
   config.vm.synced_folder "ansible", "/home/vagrant/ansible", create: true
 
-
-  #config.vm.provision :shell, inline: $hosts
   config.vm.provision :shell, inline: "ifup eth1", run: "always"
-  #config.vm.provision :shell, path: "files/init-java.sh" 
+
+  ZOOKEEPER = 3
   
-  (1..1).each do |i|
+  (1..ZOOKEEPER).each do |i|
     config.vm.define "zookeeper-#{i}" do |zookeeper|
       zookeeper.vm.hostname = "zookeeper-#{i}"
       zookeeper.vm.provider "virtualbox" do |vb|
@@ -27,16 +26,17 @@ Vagrant.configure("2") do |config|
         vb.cpus = "1"
       end
       zookeeper.vm.network :private_network, ip: "192.168.10.#{1+i}", auto_config: true
-      #zookeeper.vm.provision :shell, path: "files/init-zookeeper.sh", args: ["#{i}", "192.168.10.#{1+i}"], privileged: false  
-      # 
-      zookeeper.vm.provision :ansible do |ansible|
-        # Disable default limit to connect to all the machines
-        ansible.limit = "all"
-        ansible.playbook = "ansible/zookeeper.yml"
-        ansible.inventory_path = "ansible/inventories/vbox"
-        ansible.raw_arguments  = ["-vv"
-          
-        ]
+      
+      if i == ZOOKEEPER
+        zookeeper.vm.provision :ansible do |ansible|
+          # Disable default limit to connect to all the machines
+          ansible.limit = "all"
+          ansible.playbook = "ansible/zookeeper.yml"
+          ansible.inventory_path = "ansible/inventories/vbox"
+          ansible.raw_arguments  = [
+            "-vv"
+          ]
+        end
       end
     end
   end

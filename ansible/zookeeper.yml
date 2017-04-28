@@ -1,5 +1,6 @@
 - hosts: zookeeper
   remote_user: vagrant
   roles:
+    - common
     - java
     - zookeeper

@@ -1,6 +1,6 @@
 [zookeeper]
 zookeeper-1
-#zookeeper-2
+zookeeper-2
 #zookeeper-3
 
 [cassandra]
