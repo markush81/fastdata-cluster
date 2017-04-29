@@ -17,7 +17,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision :shell, inline: "ifup eth1", run: "always"
 
   ZOOKEEPER = 3
-  
+
   (1..ZOOKEEPER).each do |i|
     config.vm.define "zookeeper-#{i}" do |zookeeper|
       zookeeper.vm.hostname = "zookeeper-#{i}"
@@ -26,7 +26,7 @@ Vagrant.configure("2") do |config|
         vb.cpus = "1"
       end
       zookeeper.vm.network :private_network, ip: "192.168.10.#{1+i}", auto_config: true
-      
+
       if i == ZOOKEEPER
         zookeeper.vm.provision :ansible do |ansible|
           ansible.limit = "all"
@@ -39,9 +39,9 @@ Vagrant.configure("2") do |config|
       end
     end
   end
-  
+
   KAFKA = 3
-  
+
   (1..KAFKA).each do |i|
     config.vm.define "kafka-#{i}" do |kafka|
       kafka.vm.hostname = "kafka-#{i}"
@@ -50,7 +50,7 @@ Vagrant.configure("2") do |config|
         vb.cpus = "1"
       end
       kafka.vm.network :private_network, ip: "192.168.10.#{ZOOKEEPER + 1 + i}", auto_config: true
-      
+
       if i == KAFKA
         kafka.vm.provision :ansible do |ansible|
           ansible.limit = "all"
@@ -63,19 +63,31 @@ Vagrant.configure("2") do |config|
       end
     end
   end
-  
-  #(1..3).each do |i|
-  #  config.vm.define "cassandra-#{i}" do |cassandra|
-  #    cassandra.vm.hostname = "cassandra-#{i}"
-  #    cassandra.vm.provider "virtualbox" do |vb|
-  #      vb.memory = "1024"
-  #      vb.cpus = "1"
-  #    end
-  #    cassandra.vm.network :private_network, ip: "192.168.10.#{7+i}", auto_config: true
-  #    cassandra.vm.provision :shell, path: "files/init-cassandra.sh", args: ["#{i}", "192.168.10.#{7+i}"], privileged: false  
-  #  end
-  #end
-    
+
+  CASSANDRA = 3
+
+  (1..CASSANDRA).each do |i|
+    config.vm.define "cassandra-#{i}" do |cassandra|
+      cassandra.vm.hostname = "cassandra-#{i}"
+      cassandra.vm.provider "virtualbox" do |vb|
+        vb.memory = "1024"
+        vb.cpus = "1"
+      end
+      cassandra.vm.network :private_network, ip: "192.168.10.#{ZOOKEEPER + KAFKA + 1 + i }", auto_config: true
+
+      if i == CASSANDRA
+        cassandra.vm.provision :ansible do |ansible|
+          ansible.limit = "all"
+          ansible.playbook = "ansible/cassandra.yml"
+          ansible.inventory_path = "ansible/inventories/vbox"
+          ansible.raw_arguments  = [
+            "-vv"
+          ]
+        end
+      end
+    end
+  end
+
   #(3).downto(1).each do |i|
   #  config.vm.define "analytics-#{i}" do |analytics|
   #    analytics.vm.hostname = "analytics-#{i}"
@@ -84,7 +96,7 @@ Vagrant.configure("2") do |config|
   #        vb.memory = "3584"
   #        vb.cpus = "2"
   #      end
-  #    else 
+  #    else
   #      analytics.vm.provider "virtualbox" do |vb|
   #        vb.memory = "3072"
   #        vb.cpus = "2"
@@ -92,10 +104,10 @@ Vagrant.configure("2") do |config|
   #    end
   #    analytics.vm.network :private_network, ip: "192.168.10.#{10+i}", auto_config: true
   #    analytics.vm.provision :shell, path: "files/init-hadoop.sh", args: ["#{i}", "192.168.10.#{10+i}"], privileged: false
-  #    
+  #
   #    if i == 1
-  #      analytics.vm.provision :shell, path: "files/init-spark.sh", args: ["1", "192.168.10.#{10+i}"], privileged: false 
-  #      analytics.vm.provision :shell, path: "files/init-flink.sh", args: ["1", "192.168.10.#{10+i}"], privileged: false 
+  #      analytics.vm.provision :shell, path: "files/init-spark.sh", args: ["1", "192.168.10.#{10+i}"], privileged: false
+  #      analytics.vm.provision :shell, path: "files/init-flink.sh", args: ["1", "192.168.10.#{10+i}"], privileged: false
   #    end
   #  end
   #end

@@ -76,7 +76,7 @@ lucky:~ markus$ vagrant ssh cassandra-1
 Connected to analytics at 127.0.0.1:9042.
 [cqlsh 5.0.1 | Cassandra 3.10 | CQL spec 3.4.4 | Native protocol v4]
 Use HELP for help.
-cqlsh> 
+cqlsh>
 ```
 
 Check Cluster Status:
@@ -97,16 +97,17 @@ UN  192.168.10.10  82.36 KiB  256          62.0%             69ba4402-c1d5-450c-
 
 ```bash
 lucky:~ markus$ vagrant ssh zookeeper-1
-[vagrant@zookeeper-1 ~]$ zookeeper-shell.sh zookeeper-1:2181,zookeeper-3:2181
+[vagrant@zookeeper-1 ~]$ zkCli.sh -server zookeeper-1:2181,zookeeper-3:2181
 Connecting to zookeeper-1:2181,zookeeper-3:2181
-Welcome to ZooKeeper!
-JLine support is disabled
+
+...
 
 WATCHER::
 
 WatchedEvent state:SyncConnected type:None path:null
-ls /
+[zk: zookeeper-1:2181,zookeeper-3:2181(CONNECTED) 0] ls /
 [cluster, controller, controller_epoch, brokers, zookeeper, admin, isr_change_notification, consumers, config]
+[zk: zookeeper-1:2181,zookeeper-3:2181(CONNECTED) 1]
 
 ```
 
@@ -126,7 +127,7 @@ Topic:sample	PartitionCount:6	ReplicationFactor:2	Configs:
 	Topic: sample	Partition: 3	Leader: 1	Replicas: 1,3	Isr: 1,3
 	Topic: sample	Partition: 4	Leader: 2	Replicas: 2,1	Isr: 2,1
 	Topic: sample	Partition: 5	Leader: 3	Replicas: 3,2	Isr: 3,2
-[vagrant@kafka-1 ~]$ 
+[vagrant@kafka-1 ~]$
 ```
 ### Producer
 
@@ -228,4 +229,3 @@ Since starting flink via system keeps in restarting, it is now manually started 
 - [hdfs-default.xml](https://hadoop.apache.org/docs/r2.8.0/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml)
 - [Spark Documentation](https://spark.apache.org/docs/2.1.0/)
 - [Apache Cassandra Documentation 3.9](http://cassandra.apache.org/doc/3.9/)
-

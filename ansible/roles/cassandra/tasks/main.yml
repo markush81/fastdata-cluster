@@ -13,60 +13,60 @@
     src: "{{ download }}/{{ file }}"
     dest: "{{ usr_local }}"
     copy: no
-    creates: "{{ kafka_home }}"
+    creates: "{{ cassandra_home }}"
 
-- name: set PATH=$PATH:{{ kafka_home }}/bin
+- name: set PATH=$PATH:{{ cassandra_home }}/bin
   become: yes
   become_method: sudo
   lineinfile:
-    dest: "{{ etc_profiles }}/kafka.sh"
+    dest: "{{ etc_profiles }}/cassandra.sh"
     create: yes
     state: present
     regexp: '^PATH'
-    line: 'PATH=$PATH:{{ kafka_home }}/bin'
+    line: 'PATH=$PATH:{{ cassandra_home }}/bin'
 
 - stat:
-    path: "{{ system_units }}/kafka.service"
-  register: kafka_service
+    path: "{{ system_units }}/cassandra.service"
+  register: cassandra_service
 
-- name: stop kafka
+- name: stop cassandra
   become: yes
   become_method: sudo
   systemd:
     state: stopped
-    name: kafka
-  when: kafka_service.stat.exists
+    name: cassandra
+  when: cassandra_service.stat.exists
   tags:
     - stop
 
-- name: copy server.properties {{ kafka_home }}/config/server.properties
+- name: copy server.properties {{ cassandra_home }}/conf/cassandra.yaml
   become: yes
   become_method: sudo
   template:
-    src: templates/server.properties.j2
-    dest: "{{ kafka_home }}/config/server.properties"
+    src: templates/cassandra.yaml.j2
+    dest: "{{ cassandra_home }}/conf/cassandra.yaml"
 
-- name: create {{ kafka_log_dir }}
+- name: create {{ cassandra_log_dir }}
   become: yes
   become_method: sudo
   file:
-    path: "{{ kafka_log_dir }}"
+    path: "{{ cassandra_log_dir }}"
     state: directory
 
-- name: install kafka systemd unit file
+- name: install cassandra systemd unit file
   become: yes
   become_method: sudo
   template:
-    src: templates/kafka.service.j2
-    dest: "{{ system_units }}/kafka.service"
+    src: templates/cassandra.service.j2
+    dest: "{{ system_units }}/cassandra.service"
 
-- name: start kafka
+- name: start cassandra
   become: yes
   become_method: sudo
   systemd:
     enabled: yes
     state: started
-    name: kafka
+    name: cassandra
     daemon_reload: yes
   tags:
     - start

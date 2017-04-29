@@ -1,3 +1,2 @@
 kafka_home: "{{ usr_local }}/{{ kafka }}"
-kafka_data_dir: /var/kafka/data
 kafka_log_dir: "{{ kafka_home }}/logs"

@@ -1,6 +1,6 @@
-- hosts: kafka
+- hosts: cassandra
   remote_user: vagrant
   roles:
     - common
     - java
-    - kafka
+    - cassandra

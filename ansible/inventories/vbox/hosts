@@ -10,8 +10,8 @@ kafka-3
 
 [cassandra]
 cassandra-1
-#cassandra-2
-#cassandra-3
+cassandra-2
+cassandra-3
 
 [hadoop]
 analytics-1
