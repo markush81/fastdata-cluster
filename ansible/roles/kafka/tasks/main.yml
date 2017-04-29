@@ -1,0 +1,79 @@
+---
+- name: download {{ url }}
+  get_url:
+    url: "{{url}}"
+    dest: "{{ download }}/{{ file }}"
+
+- name: extract {{ download }}/{{ file }}
+  become: yes
+  become_method: sudo
+  unarchive:
+    owner: root
+    group: root
+    src: "{{ download }}/{{ file }}"
+    dest: "{{ usr_local }}"
+    copy: no
+    creates: "{{ kafka_home }}"
+
+- name: set PATH=$PATH:{{ kafka_home }}/bin
+  become: yes
+  become_method: sudo
+  lineinfile: 
+    dest: "{{ etc_profiles }}/kafka.sh"
+    create: yes
+    state: present 
+    regexp: '^PATH' 
+    line: 'PATH=$PATH:{{ kafka_home }}/bin'
+
+- stat:
+    path: "{{ system_units }}/kafka.service"
+  register: kafka_service
+
+- name: stop kafka
+  become: yes
+  become_method: sudo
+  systemd:
+    state: stopped
+    name: kafka
+  when: kafka_service.stat.exists
+  tags:
+    - stop
+
+- name: copy server.properties {{ kafka_home }}/config/server.properties
+  become: yes
+  become_method: sudo
+  template:
+    src: templates/server.properties.j2
+    dest: "{{ kafka_home }}/config/server.properties"
+
+- name: create {{ kafka_data_dir }}
+  become: yes
+  become_method: sudo
+  file:
+    path: "{{ kafka_data_dir }}"
+    state: directory
+
+- name: create {{ kafka_log_dir }}
+  become: yes
+  become_method: sudo
+  file:
+    path: "{{ kafka_log_dir }}"
+    state: directory
+
+- name: install kafka systemd unit file
+  become: yes
+  become_method: sudo
+  template:
+    src: templates/kafka.service.j2
+    dest: "{{ system_units }}/kafka.service"
+
+- name: start kafka
+  become: yes
+  become_method: sudo
+  systemd:
+    enabled: yes
+    state: started
+    name: kafka
+    daemon_reload: yes
+  tags:
+    - start

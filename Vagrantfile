@@ -29,7 +29,6 @@ Vagrant.configure("2") do |config|
       
       if i == ZOOKEEPER
         zookeeper.vm.provision :ansible do |ansible|
-          # Disable default limit to connect to all the machines
           ansible.limit = "all"
           ansible.playbook = "ansible/zookeeper.yml"
           ansible.inventory_path = "ansible/inventories/vbox"
@@ -41,17 +40,29 @@ Vagrant.configure("2") do |config|
     end
   end
   
-  #(1..3).each do |i|
-  #  config.vm.define "kafka-#{i}" do |kafka|
-  #    kafka.vm.hostname = "kafka-#{i}"
-  #    kafka.vm.provider "virtualbox" do |vb|
-  #      vb.memory = "1024"
-  #      vb.cpus = "1"
-  #    end
-  #    kafka.vm.network :private_network, ip: "192.168.10.#{4+i}", auto_config: true
-  #    kafka.vm.provision :shell, path: "files/init-kafka.sh", args: ["#{i}", "192.168.10.#{4+i}"], privileged: false  
-  #  end
-  #end
+  KAFKA = 3
+  
+  (1..KAFKA).each do |i|
+    config.vm.define "kafka-#{i}" do |kafka|
+      kafka.vm.hostname = "kafka-#{i}"
+      kafka.vm.provider "virtualbox" do |vb|
+        vb.memory = "1024"
+        vb.cpus = "1"
+      end
+      kafka.vm.network :private_network, ip: "192.168.10.#{ZOOKEEPER + 1 + i}", auto_config: true
+      
+      if i == KAFKA
+        kafka.vm.provision :ansible do |ansible|
+          ansible.limit = "all"
+          ansible.playbook = "ansible/kafka.yml"
+          ansible.inventory_path = "ansible/inventories/vbox"
+          ansible.raw_arguments  = [
+            "-vv"
+          ]
+        end
+      end
+    end
+  end
   
   #(1..3).each do |i|
   #  config.vm.define "cassandra-#{i}" do |cassandra|

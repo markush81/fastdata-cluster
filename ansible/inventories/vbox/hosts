@@ -1,17 +1,17 @@
 [zookeeper]
 zookeeper-1
 zookeeper-2
-#zookeeper-3
+zookeeper-3
+
+[kafka]
+kafka-1
+kafka-2
+kafka-3
 
 [cassandra]
 cassandra-1
 #cassandra-2
 #cassandra-3
-
-[kafka]
-kafka-1
-#kafka-2
-#kafka-3
 
 [hadoop]
 analytics-1

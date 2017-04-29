@@ -60,11 +60,11 @@
     path: "{{ zookeeper_log_dir }}"
     state: directory
 
-- name: create myid in {{ zookeeper_data_dir }} for {{ inventory_hostname | regex_replace('[a-zA-Z-]+','') }}
+- name: create myid in {{ zookeeper_data_dir }} for {{ groups.zookeeper.index(inventory_hostname) + 1 }}
   become: yes
   become_method: sudo
   copy: 
-    content: "{{ inventory_hostname | regex_replace('[a-zA-Z-]+','') }}"
+    content: "{{ groups.zookeeper.index(inventory_hostname) + 1 }}"
     dest: "{{ zookeeper_data_dir }}/myid"
     force: yes
 

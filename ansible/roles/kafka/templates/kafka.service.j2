@@ -1,0 +1,14 @@
+[Unit]
+Description=Kafka Service
+After=network.target
+
+[Service]
+Environment=JAVA_HOME={{ java_home }}
+Type=forking
+User=root
+ExecStart={{ kafka_home }}/bin/kafka-server-start.sh -daemon {{ kafka_home }}/config/server.properties
+ExecStop={{ kafka_home }}/bin/kafka-server-start.sh stop
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,6 @@
+- hosts: kafka
+  remote_user: vagrant
+  roles:
+    - common
+    - java
+    - kafka
