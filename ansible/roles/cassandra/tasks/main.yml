@@ -1,5 +1,6 @@
 ---
 - name: download {{ url }}
+  run_once: true
   get_url:
     url: "{{url}}"
     dest: "{{ download }}/{{ file }}"
@@ -8,8 +9,8 @@
   become: yes
   become_method: sudo
   unarchive:
-    owner: root
-    group: root
+    owner: vagrant
+    group: vagrant
     src: "{{ download }}/{{ file }}"
     dest: "{{ usr_local }}"
     copy: no
@@ -25,30 +26,12 @@
     regexp: '^PATH'
     line: 'PATH=$PATH:{{ cassandra_home }}/bin'
 
-- stat:
-    path: "{{ system_units }}/cassandra.service"
-  register: cassandra_service
-
-- name: stop cassandra
-  become: yes
-  become_method: sudo
-  systemd:
-    state: stopped
-    name: cassandra
-  when: cassandra_service.stat.exists
-  tags:
-    - stop
-
 - name: copy server.properties {{ cassandra_home }}/conf/cassandra.yaml
-  become: yes
-  become_method: sudo
   template:
     src: templates/cassandra.yaml.j2
     dest: "{{ cassandra_home }}/conf/cassandra.yaml"
 
 - name: create {{ cassandra_log_dir }}
-  become: yes
-  become_method: sudo
   file:
     path: "{{ cassandra_log_dir }}"
     state: directory
@@ -60,13 +43,11 @@
     src: templates/cassandra.service.j2
     dest: "{{ system_units }}/cassandra.service"
 
-- name: start cassandra
+- name: restart cassandra
   become: yes
   become_method: sudo
   systemd:
     enabled: yes
-    state: started
+    state: restarted
     name: cassandra
     daemon_reload: yes
-  tags:
-    - start

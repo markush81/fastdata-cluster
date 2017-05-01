@@ -13,10 +13,12 @@ cassandra-1
 cassandra-2
 cassandra-3
 
-[hadoop]
+[hadoop-master]
 analytics-1
-#analytics-2
-#analytics-3
+
+[hadoop-slave]
+analytics-2
+analytics-3
 
 [spark]
 analytics-1

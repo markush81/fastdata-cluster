@@ -1,0 +1,92 @@
+---
+- name: download {{ url }}
+  when: inventory_hostname in groups['hadoop-master']
+  run_once: true
+  get_url:
+    url: "{{ url }}"
+    dest: "{{ download }}/{{ file }}"
+
+- name: install {{ file }}
+  when: inventory_hostname in groups['hadoop-master']
+  become: yes
+  become_method: sudo
+  yum:
+    name: "{{ download }}/{{ file }}"
+    state: present
+
+- name: generate SSH keys
+  when: inventory_hostname in groups['hadoop-master']
+  command: ssh-keygen -t rsa -P "" -f ~/.ssh/id_rsa
+  args:
+    creates: ~/.ssh/id_rsa
+  register: ssh_key
+
+- name: check for existing authorized_keys entry
+  when: inventory_hostname in groups['hadoop-master']
+  command: grep analytics-1 ~/.ssh/authorized_keys
+  ignore_errors: yes
+  register: ssh_authorized_key
+
+- name: set authorized key
+  when: inventory_hostname in groups['hadoop-master'] and ssh_authorized_key.rc != 0
+  shell: cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+
+- name: copy config ~/.ssh/config
+  when: inventory_hostname in groups['hadoop-master']
+  template:
+    mode: 0600
+    src: templates/config.j2
+    dest: ~/.ssh/config
+
+- name: check if ssh-copy-id necessary
+  when: inventory_hostname in groups['hadoop-slave']
+  command: grep analytics-1 ~/.ssh/authorized_keys
+  ignore_errors: yes
+  register: ssh_copy_id
+
+- name: modify sshd_config
+  when: inventory_hostname in groups['hadoop-slave'] and ssh_copy_id.rc != 0
+  become: yes
+  become_method: sudo
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    create: yes
+    state: present
+    regexp: '^PasswordAuthentication no'
+    line: 'PasswordAuthentication yes'
+  register: sshd_config
+
+- name: restart sshd
+  when: inventory_hostname in groups['hadoop-slave'] and ssh_copy_id.rc != 0
+  become: yes
+  become_method: sudo
+  systemd:
+    state: restarted
+    name: sshd
+
+- name: ssh-copy-id analytics-2
+  when: inventory_hostname in groups['hadoop-master'] and (ssh_key.changed or hostvars['analytics-2']['ssh_copy_id'].rc != 0)
+  command: sshpass -p vagrant ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@analytics-2
+
+- name: ssh-copy-id analytics-3
+  when: inventory_hostname in groups['hadoop-master'] and (hostvars['analytics-3']['ssh_copy_id'].rc != 0)
+  command: sshpass -p vagrant ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@analytics-3
+
+- name: revert sshd_config
+  when: inventory_hostname in groups['hadoop-slave'] and sshd_config.changed
+  become: yes
+  become_method: sudo
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    create: yes
+    state: present
+    regexp: '^PasswordAuthentication yes'
+    line: 'PasswordAuthentication no'
+
+- name: restart sshd
+  when: inventory_hostname in groups['hadoop-slave'] and sshd_config.changed
+  become: yes
+  become_method: sudo
+  systemd:
+    state: restarted
+    name: sshd

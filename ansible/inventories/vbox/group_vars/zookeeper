@@ -1,5 +1,5 @@
 zookeeper_home: "{{ usr_local }}/{{ zookeeper }}"
-zookeeper_data_dir: /var/zookeeper/data
+zookeeper_data_dir: "{{ zookeeper_home }}/data"
 zookeeper_log_dir: "{{ zookeeper_home }}/logs"
 zookeeper_nodes: |
   server.1=zookeeper-1:2888:3888

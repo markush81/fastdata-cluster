@@ -1,5 +1,6 @@
 ---
 - name: download {{ url }}
+  run_once: true
   get_url:
     url: "{{url}}"
     dest: "{{ download }}/{{ file }}"
@@ -8,8 +9,8 @@
   become: yes
   become_method: sudo
   unarchive:
-    owner: root
-    group: root
+    owner: vagrant
+    group: vagrant
     src: "{{ download }}/{{ file }}"
     dest: "{{ usr_local }}"
     copy: no
@@ -18,52 +19,30 @@
 - name: set PATH=$PATH:{{ zookeeper_home }}/bin
   become: yes
   become_method: sudo
-  lineinfile: 
+  lineinfile:
     dest: "{{ etc_profiles }}/zookeeper.sh"
     create: yes
-    state: present 
-    regexp: '^PATH' 
+    state: present
+    regexp: '^PATH'
     line: 'PATH=$PATH:{{ zookeeper_home }}/bin'
 
-- stat:
-    path: "{{ system_units }}/zookeeper.service"
-  register: zookeeper_service
-
-- name: stop zookeeper
-  become: yes
-  become_method: sudo
-  systemd:
-    state: stopped
-    name: zookeeper
-  when: zookeeper_service.stat.exists
-  tags:
-    - stop
-
 - name: copy zoo.cfg to {{ zookeeper_home }}/conf/zoo.cfg
-  become: yes
-  become_method: sudo
   template:
     src: templates/zoo.cfg.j2
     dest: "{{ zookeeper_home }}/conf/zoo.cfg"
 
 - name: create {{ zookeeper_data_dir }}
-  become: yes
-  become_method: sudo
   file:
     path: "{{ zookeeper_data_dir }}"
     state: directory
 
 - name: create {{ zookeeper_log_dir }}
-  become: yes
-  become_method: sudo
   file:
     path: "{{ zookeeper_log_dir }}"
     state: directory
 
 - name: create myid in {{ zookeeper_data_dir }} for {{ groups.zookeeper.index(inventory_hostname) + 1 }}
-  become: yes
-  become_method: sudo
-  copy: 
+  copy:
     content: "{{ groups.zookeeper.index(inventory_hostname) + 1 }}"
     dest: "{{ zookeeper_data_dir }}/myid"
     force: yes
@@ -75,13 +54,11 @@
     src: templates/zookeeper.service.j2
     dest: "{{ system_units }}/zookeeper.service"
 
-- name: start zookeeper
+- name: restart zookeeper
   become: yes
   become_method: sudo
   systemd:
     enabled: yes
-    state: started
+    state: restarted
     name: zookeeper
     daemon_reload: yes
-  tags:
-    - start

@@ -1,15 +1,14 @@
 [Unit]
-Description=Cassandra Service
+Description=YARN service
 After=network.target
 
 [Service]
 Environment=JAVA_HOME={{ java_home }}
 Type=forking
 User=vagrant
-ExecStart={{ cassandra_home }}/bin/cassandra -R -p {{ cassandra_pid }}
-ExecStop=cat {{ cassandra_pid }} | kill
+ExecStart={{ hadoop_home }}/sbin/start-yarn.sh
+ExecStop={{ hadoop_home }}/sbin/stop-yarn.sh
 Restart=always
-TimeoutSec=120
 
 [Install]
 WantedBy=multi-user.target

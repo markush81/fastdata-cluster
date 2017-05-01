@@ -1,0 +1,142 @@
+---
+- name: download {{ url }}
+  run_once: true
+  get_url:
+    url: "{{ url }}"
+    dest: "{{ download }}/{{ file }}"
+
+- name: extract {{ download }}/{{ file }}
+  become: yes
+  become_method: sudo
+  unarchive:
+    owner: vagrant
+    group: vagrant
+    src: "{{ download }}/{{ file }}"
+    dest: "{{ usr_local }}"
+    copy: no
+    creates: "{{ hadoop_home }}"
+
+- name: set PATH=$PATH:{{ hadoop_home }}/bin
+  become: yes
+  become_method: sudo
+  lineinfile:
+    dest: "{{ etc_profiles }}/hadoop.sh"
+    create: yes
+    state: present
+    regexp: '^PATH'
+    line: 'PATH=$PATH:{{ hadoop_home }}/bin:{{ hadoop_home }}/sbin'
+
+- name: set HADOOP_PREFIX={{ hadoop_home }}
+  become: yes
+  become_method: sudo
+  lineinfile:
+    dest: "{{ etc_profiles }}/hadoop.sh"
+    create: yes
+    state: present
+    regexp: '^HADOOP_PREFIX'
+    line: 'HADOOP_PREFIX={{ hadoop_home }}'
+
+- name: set HADOOP_CONF_DIR={{ hadoop_conf }}
+  become: yes
+  become_method: sudo
+  lineinfile:
+    dest: "{{ etc_profiles }}/hadoop.sh"
+    create: yes
+    state: present
+    regexp: '^HADOOP_CONF_DIR'
+    line: 'HADOOP_CONF_DIR={{ hadoop_conf }}'
+
+- name: copy core-site.xml {{ hadoop_conf }}/core-site.xml
+  template:
+    src: templates/core-site.xml.j2
+    dest: "{{ hadoop_conf }}/core-site.xml"
+
+- name: copy yarn-site.xml {{ hadoop_conf }}/core-site.xml
+  template:
+    src: templates/yarn-site.xml.j2
+    dest: "{{ hadoop_conf }}/yarn-site.xml"
+
+- name: copy hadoop-env.sh {{ hadoop_conf }}/hadoop-env.sh
+  template:
+    src: templates/hadoop-env.sh.j2
+    dest: "{{ hadoop_conf }}/hadoop-env.sh"
+
+- name: copy yarn-env.sh {{ hadoop_conf }}/yarn-env.sh
+  template:
+    src: templates/yarn-env.sh.j2
+    dest: "{{ hadoop_conf }}/yarn-env.sh"
+
+- name: copy slaves {{ hadoop_conf }}/slaves
+  when: inventory_hostname in groups['hadoop-master']
+  template:
+    src: templates/slaves.j2
+    dest: "{{ hadoop_conf }}/slaves"
+
+- name: create {{ hadoop_log_dir }}
+  file:
+    path: "{{ hadoop_log_dir }}"
+    state: directory
+
+- name: install hadoop systemd unit file
+  become: yes
+  become_method: sudo
+  when: inventory_hostname in groups['hadoop-master']
+  template:
+    src: templates/hadoop.service.j2
+    dest: "{{ system_units }}/hadoop.service"
+
+- name: install yarn systemd unit file
+  become: yes
+  become_method: sudo
+  when: inventory_hostname in groups['hadoop-master']
+  template:
+    src: templates/yarn.service.j2
+    dest: "{{ system_units }}/yarn.service"
+
+- name: format HDFS
+  when: inventory_hostname in groups['hadoop-master']
+  command: "{{ hadoop_home}}/bin/hdfs namenode -format"
+  environment:
+    JAVA_HOME: "{{ java_home }}"
+  args:
+    creates: /tmp/hadoop-vagrant/dfs/name
+
+- stat:
+    path: "{{ system_units }}/hadoop.service"
+  register: hadoop_service
+
+#- name: restart hadoop
+# become: yes
+# become_method: sudo
+# when: inventory_hostname in groups['hadoop-master']
+# systemd:
+#    enabled: yes
+#    state: restarted
+#    name: hadoop
+#    daemon_reload: yes
+#  tags:
+#    - start
+
+- name: stop hadoop
+  when: inventory_hostname in groups['hadoop-master']
+  command: "{{ hadoop_home }}/sbin/stop-dfs.sh"
+  environment:
+    JAVA_HOME: "{{ java_home }}"
+
+- name: start hadoop
+  when: inventory_hostname in groups['hadoop-master']
+  command: "{{ hadoop_home }}/sbin/start-dfs.sh"
+  environment:
+    JAVA_HOME: "{{ java_home }}"
+
+- name: restart yarn
+  become: yes
+  become_method: sudo
+  when: inventory_hostname in groups['hadoop-master']
+  systemd:
+    enabled: yes
+    state: restarted
+    name: yarn
+    daemon_reload: yes
+  tags:
+    - start
