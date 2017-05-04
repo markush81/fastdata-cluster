@@ -2,6 +2,6 @@
 <configuration>
 	<property>
 		<name>fs.defaultFS</name>
-		<value>hdfs://analytics-1</value>
+		<value>hdfs://{{ groups['hadoop-master'][0] }}</value>
 	</property>
 </configuration>

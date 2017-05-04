@@ -23,7 +23,7 @@
 
 - name: check for existing authorized_keys entry
   when: inventory_hostname in groups['hadoop-master']
-  command: grep analytics-1 ~/.ssh/authorized_keys
+  command: grep {{ inventory_hostname }} ~/.ssh/authorized_keys
   ignore_errors: yes
   register: ssh_authorized_key
 
@@ -40,7 +40,7 @@
 
 - name: check if ssh-copy-id necessary
   when: inventory_hostname in groups['hadoop-slave']
-  command: grep analytics-1 ~/.ssh/authorized_keys
+  command: grep {{ inventory_hostname }} ~/.ssh/authorized_keys
   ignore_errors: yes
   register: ssh_copy_id
 
@@ -64,13 +64,10 @@
     state: restarted
     name: sshd
 
-- name: ssh-copy-id analytics-2
-  when: inventory_hostname in groups['hadoop-master'] and (ssh_key.changed or hostvars['analytics-2']['ssh_copy_id'].rc != 0)
-  command: sshpass -p vagrant ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@analytics-2
-
-- name: ssh-copy-id analytics-3
-  when: inventory_hostname in groups['hadoop-master'] and (hostvars['analytics-3']['ssh_copy_id'].rc != 0)
-  command: sshpass -p vagrant ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@analytics-3
+- name: ssh-copy-id {{ item.name }}
+  when: inventory_hostname in groups['hadoop-master'] and (ssh_key.changed or hostvars[{{ item.name }}]['ssh_copy_id'].rc != 0)
+  command: sshpass -p vagrant ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@{{ item.name }}
+  with_items: "{{ groups['hadoop-slave'] }}"
 
 - name: revert sshd_config
   when: inventory_hostname in groups['hadoop-slave'] and sshd_config.changed

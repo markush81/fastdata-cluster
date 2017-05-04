@@ -2,9 +2,9 @@
 - name: "generate /etc/hosts.ansible file"
   become: yes
   become_method: sudo
-  template: 
+  template:
     src: templates/hosts.j2
     dest: '/etc/hosts'
-    owner: root 
+    owner: root
     group: root
     mode: 0644

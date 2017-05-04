@@ -1,8 +1,0 @@
-- hosts: hadoop-master:hadoop-slave
-  remote_user: vagrant
-  serial: 100%
-  roles:
-    - common
-    - ssh
-    - java
-    - hadoop

@@ -1,7 +1,7 @@
 [zookeeper]
-zookeeper-1
-zookeeper-2
-zookeeper-3
+kafka-1
+kafka-2
+kafka-3
 
 [kafka]
 kafka-1
@@ -14,14 +14,14 @@ cassandra-2
 cassandra-3
 
 [hadoop-master]
-analytics-1
+hadoop-1
 
 [hadoop-slave]
-analytics-2
-analytics-3
+hadoop-2
+hadoop-3
 
 [spark]
-analytics-1
+hadoop-1
 
 [flink]
-analytics-1
+hadoop-1

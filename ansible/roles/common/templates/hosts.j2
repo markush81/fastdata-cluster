@@ -1,15 +1,8 @@
 127.0.0.1   localhost
 ::1         localhost ip6-localhost ip6-loopback
 
-192.168.10.2 zookeeper-1 zookeeper-1
-192.168.10.3 zookeeper-2 zookeeper-2
-192.168.10.4 zookeeper-3 zookeeper-3
-192.168.10.5 kafka-1 kafka-1
-192.168.10.6 kafka-2 kafka-2
-192.168.10.7 kafka-3 kafka-3
-192.168.10.8 cassandra-1 cassandra-1
-192.168.10.9 cassandra-2 cassandra-2
-192.168.10.10 cassandra-3 cassandra-3
-192.168.10.11 analytics-1 analytics-1
-192.168.10.12 analytics-2 analytics-2
-192.168.10.13 analytics-3 analytics-3
+{% for item in groups['all'] %}
+{% if 'ansible_eth1' in hostvars[item] %}
+{{ hostvars[item]['ansible_eth1']['ipv4']['address'] }} {{ item }}
+{% endif %}
+{% endfor %}

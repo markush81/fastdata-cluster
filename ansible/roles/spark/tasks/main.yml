@@ -1,0 +1,47 @@
+---
+- name: download {{ url }}
+  run_once: true
+  get_url:
+    url: "{{url}}"
+    dest: "{{ download }}/{{ file }}"
+
+- name: extract {{ download }}/{{ file }}
+  become: yes
+  become_method: sudo
+  unarchive:
+    owner: vagrant
+    group: vagrant
+    src: "{{ download }}/{{ file }}"
+    dest: "{{ usr_local }}"
+    copy: no
+    creates: "{{ spark_home }}"
+
+- name: set PATH=$PATH:{{ spark_home }}/bin
+  become: yes
+  become_method: sudo
+  lineinfile:
+    dest: "{{ etc_profiles }}/spark.sh"
+    create: yes
+    state: present
+    regexp: '^PATH'
+    line: 'PATH=$PATH:{{ spark_home }}/bin'
+
+- name: set SPARK_LOCAL_IP={{ hostvars[inventory_hostname]['ansible_all_ipv4_addresses'][0] }}
+  become: yes
+  become_method: sudo
+  lineinfile:
+    dest: "{{ etc_profiles }}/spark.sh"
+    create: yes
+    state: present
+    regexp: '^SPARK_LOCAL_IP'
+    line: "SPARK_LOCAL_IP={{ hostvars[inventory_hostname]['ansible_all_ipv4_addresses'][0] }}"
+
+- name: set SPARK_DIST_CLASSPATH=$(hadoop classpath)
+  become: yes
+  become_method: sudo
+  lineinfile:
+    dest: "{{ etc_profiles }}/spark.sh"
+    create: yes
+    state: present
+    regexp: '^export SPARK_DIST_CLASSPATH'
+    line: 'export SPARK_DIST_CLASSPATH=$(hadoop classpath)'

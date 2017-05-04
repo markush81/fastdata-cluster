@@ -2,7 +2,7 @@
 <configuration>
 	<property>
 		<name>yarn.resourcemanager.hostname</name>
-		<value>192.168.10.11</value>
+		<value>{{ groups['hadoop-master'][0] }}</value>
 	</property>
 	<property>
 		<name>yarn.nodemanager.hostname</name>
@@ -19,7 +19,7 @@
 	</property>
 	<property>
 		<name>yarn.scheduler.maximum-allocation-mb</name>
-		<value>1024</value>
+		<value>1428</value>
 	</property>
 	<!--property>
 		<name>yarn.nodemanager.resource.memory-mb</name>

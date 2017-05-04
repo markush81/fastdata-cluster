@@ -43,8 +43,8 @@
     dest: "{{ etc_profiles }}/hadoop.sh"
     create: yes
     state: present
-    regexp: '^HADOOP_CONF_DIR'
-    line: 'HADOOP_CONF_DIR={{ hadoop_conf }}'
+    regexp: '^export HADOOP_CONF_DIR'
+    line: 'export HADOOP_CONF_DIR={{ hadoop_conf }}'
 
 - name: copy core-site.xml {{ hadoop_conf }}/core-site.xml
   template:
