@@ -20,7 +20,7 @@
   file:
     path: "{{ hadoop_home }}"
     owner: vagrant
-    group: wheel
+    group: vagrant
     recurse: yes
     mode: 0755
 
@@ -65,6 +65,12 @@
     src: templates/yarn-site.xml.j2
     dest: "{{ hadoop_conf }}/yarn-site.xml"
   register: yarn_config
+
+- name: copy capacity-scheduler.xml {{ hadoop_conf }}/capacity-scheduler.xml
+  template:
+    src: templates/capacity-scheduler.xml.j2
+    dest: "{{ hadoop_conf }}/capacity-scheduler.xml"
+  register: capacity_config
 
 - name: copy hadoop-env.sh {{ hadoop_conf }}/hadoop-env.sh
   template:
@@ -141,7 +147,7 @@
 - name: restart yarn
   become: yes
   become_method: sudo
-  when: inventory_hostname in groups['hadoop-master'] and (yarn_env.changed or yarn_config.changed or slave_config.changed)
+  when: inventory_hostname in groups['hadoop-master'] and (yarn_env.changed or yarn_config.changed or capacity_config.changed or slave_config.changed)
   systemd:
     enabled: yes
     state: restarted

@@ -152,7 +152,7 @@ The YARN ResourceManager UI can be accessed by [http://192.168.10.11:8088](http:
 
 ```bash
 lucky:~ markus$ vagrant ssh hadoop-1
-[vagrant@hadoop-1 ~]$ spark-submit --master yarn --class org.apache.spark.examples.SparkPi --deploy-mode cluster --executor-memory 1G --num-executors 3 /usr/local/spark-2.1.0-bin-without-hadoop/examples/jars/spark-examples_2.11-2.1.0.jar 1000
+[vagrant@hadoop-1 ~]$ spark-submit --master yarn --class org.apache.spark.examples.SparkPi --deploy-mode cluster --driver-memory 512M --executor-memory 512M --num-executors 2 /usr/local/spark-2.1.1-bin-without-hadoop/examples/jars/spark-examples_2.11-2.1.1.jar 1000
 ```
 
 ### Own Spark Streaming Job

@@ -20,7 +20,7 @@
   file:
     path: "{{ zookeeper_home }}"
     owner: vagrant
-    group: wheel
+    group: vagrant
     recurse: yes
     mode: 0755
 

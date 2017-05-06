@@ -7,7 +7,7 @@ Environment=JAVA_HOME={{ java_home }}
 Environment=HADOOP_CONF_DIR={{ usr_local}}/hadoop-2.8.0/etc/hadoop
 Type=simple
 User=vagrant
-ExecStart={{ flink_home }}/bin/yarn-session.sh -n 3 -jm 1024 -tm 1024 -s 2 -d
+ExecStart={{ flink_home }}/bin/yarn-session.sh -n 3 -jm 768 -tm 768 -s 2 -d
 #ExecStop=echo stop | {{ flink_home }}/bin/yarn-session.sh -id
 Restart=always
 
