@@ -9,12 +9,20 @@
   become: yes
   become_method: sudo
   unarchive:
-    owner: vagrant
-    group: vagrant
     src: "{{ download }}/{{ file }}"
     dest: "{{ usr_local }}"
     copy: no
     creates: "{{ spark_home }}"
+
+- name: set ownership on {{ spark_home }}
+  become: yes
+  become_method: sudo
+  file:
+    path: "{{ spark_home }}"
+    owner: vagrant
+    group: wheel
+    recurse: yes
+    mode: 0755
 
 - name: set PATH=$PATH:{{ spark_home }}/bin
   become: yes

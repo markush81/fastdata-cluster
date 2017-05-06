@@ -9,12 +9,20 @@
   become: yes
   become_method: sudo
   unarchive:
-    owner: vagrant
-    group: vagrant
     src: "{{ download }}/{{ file }}"
     dest: "{{ usr_local }}"
     copy: no
     creates: "{{ zookeeper_home }}"
+
+- name: set ownership on {{ zookeeper_home }}
+  become: yes
+  become_method: sudo
+  file:
+    path: "{{ zookeeper_home }}"
+    owner: vagrant
+    group: wheel
+    recurse: yes
+    mode: 0755
 
 - name: set PATH=$PATH:{{ zookeeper_home }}/bin
   become: yes
@@ -30,6 +38,7 @@
   template:
     src: templates/zoo.cfg.j2
     dest: "{{ zookeeper_home }}/conf/zoo.cfg"
+  register: zoo_config
 
 - name: create {{ zookeeper_data_dir }}
   file:
@@ -57,6 +66,7 @@
 - name: restart zookeeper
   become: yes
   become_method: sudo
+  when: zoo_config.changed
   systemd:
     enabled: yes
     state: restarted

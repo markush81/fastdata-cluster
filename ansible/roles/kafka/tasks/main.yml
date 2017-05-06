@@ -9,12 +9,20 @@
   become: yes
   become_method: sudo
   unarchive:
-    owner: vagrant
-    group: vagrant
     src: "{{ download }}/{{ file }}"
     dest: "{{ usr_local }}"
     copy: no
     creates: "{{ kafka_home }}"
+
+- name: set ownership on {{ kafka_home }}
+  become: yes
+  become_method: sudo
+  file:
+    path: "{{ kafka_home }}"
+    owner: vagrant
+    group: wheel
+    recurse: yes
+    mode: 0755
 
 - name: set PATH=$PATH:{{ kafka_home }}/bin
   become: yes
@@ -30,6 +38,7 @@
   template:
     src: templates/server.properties.j2
     dest: "{{ kafka_home }}/config/server.properties"
+  register: kafka_config
 
 - name: create {{ kafka_log_dir }}
   file:
@@ -46,6 +55,7 @@
 - name: restart kafka
   become: yes
   become_method: sudo
+  when: kafka_config.changed
   systemd:
     enabled: yes
     state: restarted

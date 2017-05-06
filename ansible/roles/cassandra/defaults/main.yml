@@ -1,5 +1,5 @@
 ---
 version: "3.10"
-cassandra: "apache-cassandra-{{ version }}"
+cassandra: apache-cassandra-{{ version }}
 file: "{{ cassandra }}-bin.tar.gz"
 url: ftp://ftp-stud.hs-esslingen.de/pub/Mirrors/ftp.apache.org/dist/cassandra/{{ version }}/{{ file }}

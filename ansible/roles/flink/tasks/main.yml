@@ -9,12 +9,20 @@
   become: yes
   become_method: sudo
   unarchive:
-    owner: vagrant
-    group: vagrant
     src: "{{ download }}/{{ file }}"
     dest: "{{ usr_local }}"
     copy: no
     creates: "{{ flink_home }}"
+
+- name: set ownership on {{ flink_home }}
+  become: yes
+  become_method: sudo
+  file:
+    path: "{{ flink_home }}"
+    owner: vagrant
+    group: wheel
+    recurse: yes
+    mode: 0755
 
 - name: set PATH=$PATH:{{ flink_home }}/bin
   become: yes
@@ -47,5 +55,5 @@
   register: flink_status
 
 - name: start flink manually {{ flink_home }}/bin/yarn-session.sh
-  shell: "{{ flink_home }}/bin/yarn-session.sh -n 3 -jm 768 -tm 768 -s 2 -d"
+  shell: "{{ flink_home }}/bin/yarn-session.sh -n 3 -jm 1024 -tm 1024 -s 2 -d"
   when: flink_status.rc != 0

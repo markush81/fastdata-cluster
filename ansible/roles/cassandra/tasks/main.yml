@@ -9,12 +9,20 @@
   become: yes
   become_method: sudo
   unarchive:
-    owner: vagrant
-    group: vagrant
     src: "{{ download }}/{{ file }}"
     dest: "{{ usr_local }}"
     copy: no
     creates: "{{ cassandra_home }}"
+
+- name: set ownership on {{ cassandra_home }}
+  become: yes
+  become_method: sudo
+  file:
+    path: "{{ cassandra_home }}"
+    owner: vagrant
+    group: wheel
+    recurse: yes
+    mode: 0755
 
 - name: set PATH=$PATH:{{ cassandra_home }}/bin
   become: yes
@@ -30,6 +38,7 @@
   template:
     src: templates/cassandra.yaml.j2
     dest: "{{ cassandra_home }}/conf/cassandra.yaml"
+  register: cassandra_config
 
 - name: create {{ cassandra_log_dir }}
   file:
@@ -46,6 +55,7 @@
 - name: restart cassandra
   become: yes
   become_method: sudo
+  when: cassandra_config.changed
   systemd:
     enabled: yes
     state: restarted

@@ -9,12 +9,20 @@
   become: yes
   become_method: sudo
   unarchive:
-    owner: vagrant
-    group: vagrant
     src: "{{ download }}/{{ file }}"
     dest: "{{ usr_local }}"
     copy: no
     creates: "{{ hadoop_home }}"
+
+- name: set ownership on {{ hadoop_home }}
+  become: yes
+  become_method: sudo
+  file:
+    path: "{{ hadoop_home }}"
+    owner: vagrant
+    group: wheel
+    recurse: yes
+    mode: 0755
 
 - name: set PATH=$PATH:{{ hadoop_home }}/bin
   become: yes
@@ -50,27 +58,32 @@
   template:
     src: templates/core-site.xml.j2
     dest: "{{ hadoop_conf }}/core-site.xml"
+  register: core_config
 
 - name: copy yarn-site.xml {{ hadoop_conf }}/core-site.xml
   template:
     src: templates/yarn-site.xml.j2
     dest: "{{ hadoop_conf }}/yarn-site.xml"
+  register: yarn_config
 
 - name: copy hadoop-env.sh {{ hadoop_conf }}/hadoop-env.sh
   template:
     src: templates/hadoop-env.sh.j2
     dest: "{{ hadoop_conf }}/hadoop-env.sh"
+  register: hadoop_env
 
 - name: copy yarn-env.sh {{ hadoop_conf }}/yarn-env.sh
   template:
     src: templates/yarn-env.sh.j2
     dest: "{{ hadoop_conf }}/yarn-env.sh"
+  register: yarn_env
 
 - name: copy slaves {{ hadoop_conf }}/slaves
   when: inventory_hostname in groups['hadoop-master']
   template:
     src: templates/slaves.j2
     dest: "{{ hadoop_conf }}/slaves"
+  register: slave_config
 
 - name: create {{ hadoop_log_dir }}
   file:
@@ -101,14 +114,10 @@
   args:
     creates: /tmp/hadoop-vagrant/dfs/name
 
-- stat:
-    path: "{{ system_units }}/hadoop.service"
-  register: hadoop_service
-
 #- name: restart hadoop
 # become: yes
 # become_method: sudo
-# when: inventory_hostname in groups['hadoop-master']
+# when: inventory_hostname in groups['hadoop-master'] and (hadoop_env.changed or core_config.changed or slave_config.changed)
 # systemd:
 #    enabled: yes
 #    state: restarted
@@ -118,13 +127,13 @@
 #    - start
 
 - name: stop hadoop
-  when: inventory_hostname in groups['hadoop-master']
+  when: inventory_hostname in groups['hadoop-master'] and (hadoop_env.changed or core_config.changed or slave_config.changed)
   command: "{{ hadoop_home }}/sbin/stop-dfs.sh"
   environment:
     JAVA_HOME: "{{ java_home }}"
 
 - name: start hadoop
-  when: inventory_hostname in groups['hadoop-master']
+  when: inventory_hostname in groups['hadoop-master'] and (hadoop_env.changed or core_config.changed or slave_config.changed)
   command: "{{ hadoop_home }}/sbin/start-dfs.sh"
   environment:
     JAVA_HOME: "{{ java_home }}"
@@ -132,7 +141,7 @@
 - name: restart yarn
   become: yes
   become_method: sudo
-  when: inventory_hostname in groups['hadoop-master']
+  when: inventory_hostname in groups['hadoop-master'] and (yarn_env.changed or yarn_config.changed or slave_config.changed)
   systemd:
     enabled: yes
     state: restarted

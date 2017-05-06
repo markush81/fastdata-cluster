@@ -3,27 +3,24 @@
   serial: 100%
   roles:
     - common
+    - java
 
 - hosts: zookeeper
   remote_user: vagrant
   serial: 100%
   roles:
-    - java
     - zookeeper
 
 - hosts: kafka
   remote_user: vagrant
   serial: 100%
   roles:
-    - java
     - kafka
-
 
 - hosts: cassandra
   remote_user: vagrant
   serial: 100%
   roles:
-    - java
     - cassandra
 
 - hosts: hadoop-master:hadoop-slave
@@ -31,12 +28,17 @@
   serial: 100%
   roles:
     - ssh
-    - java
+
+- hosts: hadoop-slave
+  remote_user: vagrant
+  serial: 100%
+  roles:
     - hadoop
 
 - hosts: hadoop-master
   remote_user: vagrant
   serial: 100%
   roles:
+    - hadoop
     - spark
     - flink
