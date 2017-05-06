@@ -1,5 +1,4 @@
 .vagrant
-pkgs
-exchange
 download
-ansible/*.retry
+exchange
+*.retry

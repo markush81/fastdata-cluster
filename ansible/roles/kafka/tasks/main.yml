@@ -1,0 +1,62 @@
+---
+- name: download {{ url }}
+  run_once: true
+  get_url:
+    url: "{{url}}"
+    dest: "{{ download }}/{{ file }}"
+
+- name: extract {{ download }}/{{ file }}
+  become: yes
+  become_method: sudo
+  unarchive:
+    src: "{{ download }}/{{ file }}"
+    dest: "{{ usr_local }}"
+    copy: no
+    creates: "{{ kafka_home }}"
+
+- name: set ownership on {{ kafka_home }}
+  become: yes
+  become_method: sudo
+  file:
+    path: "{{ kafka_home }}"
+    owner: vagrant
+    group: vagrant
+    recurse: yes
+    mode: 0755
+
+- name: set PATH=$PATH:{{ kafka_home }}/bin
+  become: yes
+  become_method: sudo
+  lineinfile:
+    dest: "{{ etc_profiles }}/kafka.sh"
+    create: yes
+    state: present
+    regexp: '^PATH'
+    line: 'PATH=$PATH:{{ kafka_home }}/bin'
+
+- name: copy server.properties {{ kafka_home }}/config/server.properties
+  template:
+    src: templates/server.properties.j2
+    dest: "{{ kafka_home }}/config/server.properties"
+  register: kafka_config
+
+- name: create {{ kafka_log_dir }}
+  file:
+    path: "{{ kafka_log_dir }}"
+    state: directory
+
+- name: install kafka systemd unit file
+  become: yes
+  become_method: sudo
+  template:
+    src: templates/kafka.service.j2
+    dest: "{{ system_units }}/kafka.service"
+
+- name: restart kafka
+  become: yes
+  become_method: sudo
+  when: kafka_config.changed
+  systemd:
+    enabled: yes
+    state: restarted
+    name: kafka

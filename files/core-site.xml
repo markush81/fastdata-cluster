@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<configuration>
-	<property>
-		<name>fs.defaultFS</name>
-		<value>hdfs://analytics-1</value>
-	</property>
-</configuration>

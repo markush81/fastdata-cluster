@@ -1,0 +1,59 @@
+---
+- name: download {{ url }}
+  run_once: true
+  get_url:
+    url: "{{url}}"
+    dest: "{{ download }}/{{ file }}"
+
+- name: extract {{ download }}/{{ file }}
+  become: yes
+  become_method: sudo
+  unarchive:
+    src: "{{ download }}/{{ file }}"
+    dest: "{{ usr_local }}"
+    copy: no
+    creates: "{{ flink_home }}"
+
+- name: set ownership on {{ flink_home }}
+  become: yes
+  become_method: sudo
+  file:
+    path: "{{ flink_home }}"
+    owner: vagrant
+    group: vagrant
+    recurse: yes
+    mode: 0755
+
+- name: set PATH=$PATH:{{ flink_home }}/bin
+  become: yes
+  become_method: sudo
+  lineinfile:
+    dest: "{{ etc_profiles }}/flink.sh"
+    create: yes
+    state: present
+    regexp: '^PATH'
+    line: 'PATH=$PATH:{{ flink_home }}/bin'
+
+- name: install flink systemd unit file
+  become: yes
+  become_method: sudo
+  template:
+    src: templates/flink.service.j2
+    dest: "{{ system_units }}/flink.service"
+
+#- name: restart flink
+#  become: yes
+#  become_method: sudo
+#  systemd:
+#    enabled: yes
+#    state: restarted
+#    name: flink
+
+- name: check if flink already started
+  shell:  ps ax | grep flink | grep -v grep
+  ignore_errors: yes
+  register: flink_status
+
+- name: start flink manually {{ flink_home }}/bin/yarn-session.sh
+  shell: "{{ flink_home }}/bin/yarn-session.sh -n 3 -jm 768 -tm 768 -s 2 -d"
+  when: flink_status.rc != 0

@@ -1,0 +1,63 @@
+---
+- name: download {{ url }}
+  run_once: true
+  get_url:
+    url: "{{url}}"
+    dest: "{{ download }}/{{ file }}"
+
+- name: extract {{ download }}/{{ file }}
+  become: yes
+  become_method: sudo
+  unarchive:
+    src: "{{ download }}/{{ file }}"
+    dest: "{{ usr_local }}"
+    copy: no
+    creates: "{{ cassandra_home }}"
+
+- name: set ownership on {{ cassandra_home }}
+  become: yes
+  become_method: sudo
+  file:
+    path: "{{ cassandra_home }}"
+    owner: vagrant
+    group: vagrant
+    recurse: yes
+    mode: 0755
+
+- name: set PATH=$PATH:{{ cassandra_home }}/bin
+  become: yes
+  become_method: sudo
+  lineinfile:
+    dest: "{{ etc_profiles }}/cassandra.sh"
+    create: yes
+    state: present
+    regexp: '^PATH'
+    line: 'PATH=$PATH:{{ cassandra_home }}/bin'
+
+- name: copy server.properties {{ cassandra_home }}/conf/cassandra.yaml
+  template:
+    src: templates/cassandra.yaml.j2
+    dest: "{{ cassandra_home }}/conf/cassandra.yaml"
+  register: cassandra_config
+
+- name: create {{ cassandra_log_dir }}
+  file:
+    path: "{{ cassandra_log_dir }}"
+    state: directory
+
+- name: install cassandra systemd unit file
+  become: yes
+  become_method: sudo
+  template:
+    src: templates/cassandra.service.j2
+    dest: "{{ system_units }}/cassandra.service"
+
+- name: restart cassandra
+  become: yes
+  become_method: sudo
+  when: cassandra_config.changed
+  systemd:
+    enabled: yes
+    state: restarted
+    name: cassandra
+    daemon_reload: yes

@@ -1,0 +1,14 @@
+[Unit]
+Description=YARN service
+After=network.target
+
+[Service]
+Environment=JAVA_HOME={{ java_home }}
+Type=forking
+User=vagrant
+ExecStart={{ hadoop_home }}/sbin/start-yarn.sh
+ExecStop={{ hadoop_home }}/sbin/stop-yarn.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
