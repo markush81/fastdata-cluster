@@ -9,7 +9,7 @@ Type=forking
 User=vagrant
 ExecStart={{ zookeeper_home }}/bin/zkServer.sh start
 ExecStop={{ zookeeper_home }}/bin/zkServer.sh stop
-Restart=always
+Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target

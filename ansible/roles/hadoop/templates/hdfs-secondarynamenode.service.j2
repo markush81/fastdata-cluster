@@ -1,0 +1,16 @@
+[Unit]
+Description=HDFS Namenode Service
+After=hdfs-namenode.service
+
+[Service]
+Type=forking
+Environment=JAVA_HOME={{ java_home }}
+Environment=HADOOP_PREFIX={{ hadoop_home }}
+Environment=HADOOP_CONF_DIR={{ hadoop_home }}/etc/hadoop
+User=vagrant
+ExecStart={{ hadoop_home }}/sbin/hadoop-daemon.sh --config $HADOOP_CONF_DIR --script hdfs start secondarynamenode
+ExecStop={{ hadoop_home }}/sbin/hadoop-daemon.sh --config $HADOOP_CONF_DIR --script hdfs stop secondarynamenode
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

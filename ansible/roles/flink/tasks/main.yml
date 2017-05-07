@@ -40,10 +40,12 @@
   template:
     src: templates/flink.service.j2
     dest: "{{ system_units }}/flink.service"
+  register: flink_service
 
 #- name: restart flink
 #  become: yes
 #  become_method: sudo
+#  when: flink_service.changed
 #  systemd:
 #    enabled: yes
 #    state: restarted

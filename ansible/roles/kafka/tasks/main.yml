@@ -51,11 +51,12 @@
   template:
     src: templates/kafka.service.j2
     dest: "{{ system_units }}/kafka.service"
+  register: kafka_service
 
 - name: restart kafka
   become: yes
   become_method: sudo
-  when: kafka_config.changed
+  when: kafka_config.changed or kafka_service.changed
   systemd:
     enabled: yes
     state: restarted

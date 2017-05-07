@@ -96,13 +96,31 @@
     path: "{{ hadoop_log_dir }}"
     state: directory
 
-- name: install hadoop systemd unit file
+- name: install hdfs-namenode systemd unit file
   become: yes
   become_method: sudo
   when: inventory_hostname in groups['hadoop-master']
   template:
-    src: templates/hadoop.service.j2
-    dest: "{{ system_units }}/hadoop.service"
+    src: templates/hdfs-namenode.service.j2
+    dest: "{{ system_units }}/hdfs-namenode.service"
+  register: hdfs_namenode_service
+
+- name: install hdfs-secondarynamenode systemd unit file
+  become: yes
+  become_method: sudo
+  when: inventory_hostname in groups['hadoop-master']
+  template:
+    src: templates/hdfs-secondarynamenode.service.j2
+    dest: "{{ system_units }}/hdfs-secondarynamenode.service"
+  register: hdfs_secondarynamenode_service
+
+- name: install hdfs-datanode systemd unit file
+  become: yes
+  become_method: sudo
+  template:
+    src: templates/hdfs-datanode.service.j2
+    dest: "{{ system_units }}/hdfs-datanode.service"
+  register: hdfs_datanode_service
 
 - name: install yarn systemd unit file
   become: yes
@@ -118,31 +136,39 @@
   environment:
     JAVA_HOME: "{{ java_home }}"
   args:
-    creates: /tmp/hadoop-vagrant/dfs/name
+    creates: /tmp/hadoop-{{ ansible_user }}/dfs/name
 
-#- name: restart hadoop
-# become: yes
-# become_method: sudo
-# when: inventory_hostname in groups['hadoop-master'] and (hadoop_env.changed or core_config.changed or slave_config.changed)
-# systemd:
-#    enabled: yes
-#    state: restarted
-#    name: hadoop
-#    daemon_reload: yes
-#  tags:
-#    - start
+- name: restart hdfs-namenode
+  become: yes
+  become_method: sudo
+  when: inventory_hostname in groups['hadoop-master'] and (hadoop_env.changed or core_config.changed or slave_config.changed or hdfs_namenode_service.changed)
+  systemd:
+    enabled: yes
+    state: restarted
+    name: hdfs-namenode
+    daemon_reload: yes
+  register: hadoop_namenode_restart
 
-- name: stop hadoop
-  when: inventory_hostname in groups['hadoop-master'] and (hadoop_env.changed or core_config.changed or slave_config.changed)
-  command: "{{ hadoop_home }}/sbin/stop-dfs.sh"
-  environment:
-    JAVA_HOME: "{{ java_home }}"
+- name: restart hdfs-datanode
+  become: yes
+  become_method: sudo
+  when: hadoop_namenode_restart and hadoop_env.changed or core_config.changed or slave_config.changed or hdfs_datanode_service.changed
+  systemd:
+    enabled: yes
+    state: restarted
+    name: hdfs-datanode
+    daemon_reload: yes
 
-- name: start hadoop
-  when: inventory_hostname in groups['hadoop-master'] and (hadoop_env.changed or core_config.changed or slave_config.changed)
-  command: "{{ hadoop_home }}/sbin/start-dfs.sh"
-  environment:
-    JAVA_HOME: "{{ java_home }}"
+- name: restart hdfs-secondarynamenode
+  become: yes
+  become_method: sudo
+  when: inventory_hostname in groups['hadoop-master'] and (hadoop_env.changed or core_config.changed or slave_config.changed or hdfs_secondarynamenode_service.changed)
+  systemd:
+    enabled: yes
+    state: restarted
+    name: hdfs-secondarynamenode
+    daemon_reload: yes
+  register: hadoop_namenode_restart
 
 - name: restart yarn
   become: yes
@@ -153,5 +179,3 @@
     state: restarted
     name: yarn
     daemon_reload: yes
-  tags:
-    - start

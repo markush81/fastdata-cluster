@@ -208,12 +208,6 @@ Submit a job:
 
 ## Known Issues
 
-### HDFS
-
-Since starting hdfs via systemd is not yet working properly (see also [here](http://hadoop-common.472056.n3.nabble.com/Manual-Installation-CentOS-7-SystemD-Unit-Files-Hadoop-at-boot-td4108321.html#a4108518)), `start-dfs.sh` is executed manually as last step. This means there is no controlled shutdown or startup in case of restart!
-
-Executing `start-dfs.sh` via system leads to `ERROR org.apache.hadoop.hdfs.server.namenode.NameNode: RECEIVED SIGNAL 15: SIGTERM` for namenode as well as datanodes.
-
 ### Flink
 
 Since starting flink via system keeps in restarting, it is now manually started `/opt/flink/bin/yarn-session.sh -n 3 -jm 768 -tm 768 -s 2 -d` while provisioning the vm. This means there is no controlled shutdown or startup in case of restart!

@@ -8,7 +8,7 @@ Type=forking
 User=vagrant
 ExecStart={{ cassandra_home }}/bin/cassandra -R -p {{ cassandra_pid }}
 ExecStop=cat {{ cassandra_pid }} | kill
-Restart=always
+Restart=on-failure
 TimeoutSec=120
 
 [Install]

@@ -62,11 +62,12 @@
   template:
     src: templates/zookeeper.service.j2
     dest: "{{ system_units }}/zookeeper.service"
+  register: zoo_service
 
 - name: restart zookeeper
   become: yes
   become_method: sudo
-  when: zoo_config.changed
+  when: zoo_config.changed or zoo_service.changed
   systemd:
     enabled: yes
     state: restarted

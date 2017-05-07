@@ -51,11 +51,12 @@
   template:
     src: templates/cassandra.service.j2
     dest: "{{ system_units }}/cassandra.service"
+  register: cassandra_service
 
 - name: restart cassandra
   become: yes
   become_method: sudo
-  when: cassandra_config.changed
+  when: cassandra_config.changed or cassandra_service.changed
   systemd:
     enabled: yes
     state: restarted

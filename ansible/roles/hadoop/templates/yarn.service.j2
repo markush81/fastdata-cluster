@@ -8,7 +8,7 @@ Type=forking
 User=vagrant
 ExecStart={{ hadoop_home }}/sbin/start-yarn.sh
 ExecStop={{ hadoop_home }}/sbin/stop-yarn.sh
-Restart=always
+Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
