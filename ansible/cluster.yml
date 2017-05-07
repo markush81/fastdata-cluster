@@ -23,11 +23,11 @@
   roles:
     - cassandra
 
-- hosts: hadoop-master:hadoop-slave
+- hosts: hadoop-master
   remote_user: vagrant
   serial: 100%
   roles:
-    - ssh
+    - hadoop
 
 - hosts: hadoop-slave
   remote_user: vagrant
@@ -39,6 +39,5 @@
   remote_user: vagrant
   serial: 100%
   roles:
-    - hadoop
     - spark
     - flink

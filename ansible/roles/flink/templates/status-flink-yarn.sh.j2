@@ -1,0 +1,11 @@
+#!/bin/bash
+
+YARN_APPLICATION_IDS=`yarn application -list | grep Flink | awk '{split($0,a," "); print a[1]}'`
+
+echo $YARN_APPLICATION_IDS
+
+if [ -n "${YARN_APPLICATION_IDS}" ]; then
+  exit 0
+else
+  exit 1
+fi

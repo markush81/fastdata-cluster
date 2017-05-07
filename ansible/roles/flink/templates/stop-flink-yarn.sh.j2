@@ -1,0 +1,12 @@
+#!/bin/bash
+
+YARN_APPLICATION_IDS=`{{ usr_local }}/hadoop/bin/yarn application -list | grep Flink | awk '{split($0,a," "); print a[1]}'`
+
+echo $YARN_APPLICATION_IDS
+
+if [ -n "${YARN_APPLICATION_IDS}" ]; then
+  for YARN_APPLICATION_ID in $YARN_APPLICATION_IDS
+  do
+    echo stop | {{ flink_home }}/bin/yarn-session.sh -id $YARN_APPLICATION_ID
+  done
+fi

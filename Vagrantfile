@@ -29,6 +29,17 @@ Vagrant.configure("2") do |config|
         vb.cpus = "1"
       end
       kafka.vm.network :private_network, ip: "192.168.10.#{1 + i}", auto_config: true
+
+      if i == KAFKA
+        kafka.vm.provision :ansible do |ansible|
+          ansible.limit = "zookeeper,kafka"
+          ansible.playbook = "ansible/cluster.yml"
+          ansible.inventory_path = "ansible/inventories/vbox"
+          ansible.raw_arguments  = [
+            "-vv"
+          ]
+        end
+      end
     end
   end
 
@@ -40,6 +51,17 @@ Vagrant.configure("2") do |config|
         vb.cpus = "1"
       end
       cassandra.vm.network :private_network, ip: "192.168.10.#{KAFKA + 1 + i }", auto_config: true
+
+      if i == CASSANDRA
+        cassandra.vm.provision :ansible do |ansible|
+          ansible.limit = "cassandra"
+          ansible.playbook = "ansible/cluster.yml"
+          ansible.inventory_path = "ansible/inventories/vbox"
+          ansible.raw_arguments  = [
+            "-vv"
+          ]
+        end
+      end
     end
   end
 
@@ -54,7 +76,7 @@ Vagrant.configure("2") do |config|
 
       if i == 1
         hadoop.vm.provision :ansible do |ansible|
-          ansible.limit = "all"
+          ansible.limit = "hadoop-master,hadoop-slave"
           ansible.playbook = "ansible/cluster.yml"
           ansible.inventory_path = "ansible/inventories/vbox"
           ansible.raw_arguments  = [

@@ -34,6 +34,17 @@
     regexp: '^PATH'
     line: 'PATH=$PATH:{{ flink_home }}/bin'
 
+- name: install custom flink stop
+  template:
+    src: templates/stop-flink-yarn.sh.j2
+    dest: "{{ flink_home }}/bin/stop-flink-yarn.sh"
+  register: flink_stop
+
+- name: install custom flink status
+  template:
+    src: templates/status-flink-yarn.sh.j2
+    dest: "{{ flink_home }}/bin/status-flink-yarn.sh"
+
 - name: install flink systemd unit file
   become: yes
   become_method: sudo
@@ -42,20 +53,19 @@
     dest: "{{ system_units }}/flink.service"
   register: flink_service
 
-#- name: restart flink
-#  become: yes
-#  become_method: sudo
-#  when: flink_service.changed
-#  systemd:
-#    enabled: yes
-#    state: restarted
-#    name: flink
-
 - name: check if flink already started
-  shell:  ps ax | grep flink | grep -v grep
+  become: yes
+  become_user: vagrant
+  shell: "{{ flink_home }}/bin/status-flink-yarn.sh"
   ignore_errors: yes
   register: flink_status
 
-- name: start flink manually {{ flink_home }}/bin/yarn-session.sh
-  shell: "{{ flink_home }}/bin/yarn-session.sh -n 3 -jm 768 -tm 768 -s 2 -d"
-  when: flink_status.rc != 0
+- name: restart flink
+  become: yes
+  become_method: sudo
+  when: flink_service.changed or flink_stop.changed or flink_status.rc != 0
+  systemd:
+    enabled: yes
+    state: restarted
+    name: flink
+    daemon_reload: yes

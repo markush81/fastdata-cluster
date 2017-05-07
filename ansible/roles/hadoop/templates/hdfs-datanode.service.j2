@@ -1,6 +1,7 @@
 [Unit]
 Description=HDFS Namenode Service
 After=network.target
+Wants=hdfs-namenode.service
 
 [Service]
 Type=forking

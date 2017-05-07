@@ -206,12 +206,6 @@ Submit a job:
 
 ![Flink](doc/flink.png)
 
-## Known Issues
-
-### Flink
-
-Since starting flink via system keeps in restarting, it is now manually started `/opt/flink/bin/yarn-session.sh -n 3 -jm 768 -tm 768 -s 2 -d` while provisioning the vm. This means there is no controlled shutdown or startup in case of restart!
-
 ## Further Links
 
 - [yarn-default.xml](https://hadoop.apache.org/docs/r2.8.0/hadoop-yarn/hadoop-yarn-common/yarn-default.xml)

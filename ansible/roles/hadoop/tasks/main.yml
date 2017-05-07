@@ -24,6 +24,16 @@
     recurse: yes
     mode: 0755
 
+- name: link {{ hadoop_home }} to {{ usr_local }}/hadoop
+  become: yes
+  become_method: sudo
+  file:
+    src: "{{ hadoop_home }}"
+    dest: "{{ usr_local }}/hadoop"
+    owner: vagrant
+    group: vagrant
+    state: link
+
 - name: set PATH=$PATH:{{ hadoop_home }}/bin
   become: yes
   become_method: sudo
@@ -84,13 +94,6 @@
     dest: "{{ hadoop_conf }}/yarn-env.sh"
   register: yarn_env
 
-- name: copy slaves {{ hadoop_conf }}/slaves
-  when: inventory_hostname in groups['hadoop-master']
-  template:
-    src: templates/slaves.j2
-    dest: "{{ hadoop_conf }}/slaves"
-  register: slave_config
-
 - name: create {{ hadoop_log_dir }}
   file:
     path: "{{ hadoop_log_dir }}"
@@ -122,13 +125,20 @@
     dest: "{{ system_units }}/hdfs-datanode.service"
   register: hdfs_datanode_service
 
-- name: install yarn systemd unit file
+- name: install yarn-resourcemanager systemd unit file
   become: yes
   become_method: sudo
   when: inventory_hostname in groups['hadoop-master']
   template:
-    src: templates/yarn.service.j2
-    dest: "{{ system_units }}/yarn.service"
+    src: templates/yarn-resourcemanager.service.j2
+    dest: "{{ system_units }}/yarn-resourcemanager.service"
+
+- name: install yarn-nodemanager systemd unit file
+  become: yes
+  become_method: sudo
+  template:
+    src: templates/yarn-nodemanager.service.j2
+    dest: "{{ system_units }}/yarn-nodemanager.service"
 
 - name: format HDFS
   when: inventory_hostname in groups['hadoop-master']
@@ -141,18 +151,17 @@
 - name: restart hdfs-namenode
   become: yes
   become_method: sudo
-  when: inventory_hostname in groups['hadoop-master'] and (hadoop_env.changed or core_config.changed or slave_config.changed or hdfs_namenode_service.changed)
+  when: inventory_hostname in groups['hadoop-master'] and (hadoop_env.changed or core_config.changed or hdfs_namenode_service.changed)
   systemd:
     enabled: yes
     state: restarted
     name: hdfs-namenode
     daemon_reload: yes
-  register: hadoop_namenode_restart
 
 - name: restart hdfs-datanode
   become: yes
   become_method: sudo
-  when: hadoop_namenode_restart and hadoop_env.changed or core_config.changed or slave_config.changed or hdfs_datanode_service.changed
+  when: hadoop_env.changed or core_config.changed or hdfs_datanode_service.changed
   systemd:
     enabled: yes
     state: restarted
@@ -162,7 +171,7 @@
 - name: restart hdfs-secondarynamenode
   become: yes
   become_method: sudo
-  when: inventory_hostname in groups['hadoop-master'] and (hadoop_env.changed or core_config.changed or slave_config.changed or hdfs_secondarynamenode_service.changed)
+  when: inventory_hostname in groups['hadoop-master'] and (hadoop_env.changed or core_config.changed or hdfs_secondarynamenode_service.changed)
   systemd:
     enabled: yes
     state: restarted
@@ -170,12 +179,22 @@
     daemon_reload: yes
   register: hadoop_namenode_restart
 
-- name: restart yarn
+- name: restart yarn-resourcemanager
   become: yes
   become_method: sudo
-  when: inventory_hostname in groups['hadoop-master'] and (yarn_env.changed or yarn_config.changed or capacity_config.changed or slave_config.changed)
+  when: inventory_hostname in groups['hadoop-master'] and (yarn_env.changed or yarn_config.changed or capacity_config.changed)
   systemd:
     enabled: yes
     state: restarted
-    name: yarn
+    name: yarn-resourcemanager
+    daemon_reload: yes
+
+- name: restart yarn-nodemanager
+  become: yes
+  become_method: sudo
+  when: yarn_env.changed or yarn_config.changed or capacity_config.changed
+  systemd:
+    enabled: yes
+    state: restarted
+    name: yarn-nodemanager
     daemon_reload: yes
