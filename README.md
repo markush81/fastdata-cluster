@@ -142,7 +142,7 @@ Hey, is Kafka up and running?
 
 ## YARN
 
-The YARN ResourceManager UI can be accessed by [http://192.168.10.11:8088](http://192.168.10.11:8088), from there you can navigate to your application .
+The YARN ResourceManager UI can be accessed by [http://hadoop-1:8088](http://hadoop-1:8088), from there you can navigate to your application .
 
 ![YARN](doc/yarn.png)
 
