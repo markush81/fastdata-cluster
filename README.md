@@ -4,21 +4,21 @@
 
 In case you need a local cluster providing Kafka, Cassandra and Spark you're at the right place.
 
-* [Apache Kafka 0.11.0.0](http://kafka.apache.org/0110/documentation.html)
+* [Apache Kafka 0.11.0.1](http://kafka.apache.org/0110/documentation.html)
 * [Apache Spark 2.2.0](http://spark.apache.org/releases/spark-release-2-2-0.html)
 * [Apache Cassandra 3.11](http://cassandra.apache.org)
-* [Apache Hadoop 2.8.1](https://hadoop.apache.org/docs/r2.8.1/)
-* [Apache Flink 1.3.1](https://ci.apache.org/projects/flink/flink-docs-release-1.3)
+* [Apache Hadoop 2.8.1](https://hadoop.apache.org/docs/r2.8.0/)
+* [Apache Flink 1.3.2](https://ci.apache.org/projects/flink/flink-docs-release-1.3)
 
 ## Prerequisites
 
-* [Vagrant](https://www.vagrantup.com) (tested with 1.9.1)
-* [VirtualBox](http://virtualbox.org) (tested with 5.1.26)
-* [Ansible](http://docs.ansible.com/ansible/index.html) (tested with 2.3.1.0)
-* The vms take approx 18 GB of RAM, so you should have more than that.
+* [Vagrant](https://www.vagrantup.com) (tested with 2.0.0)
+* [VirtualBox](http://virtualbox.org) (tested with 5.1.28)
+* [Ansible](http://docs.ansible.com/ansible/index.html) (tested with 2.3.2.0)
+* The VMs take approx 18 GB of RAM, so you should have more than that.
 
 
-:warning: Vagrant might ask you for your admin password. The reason behind is, that `vagrant-hostsupdater` is used to have the vms available with their names in your network.
+![Warning](doc/warning.png) Vagrant migh ask you for your admin password. The rational behing is, that `vagrant-hostsupdater` is used to have the vms available with their names in your network.
 
 
 ## Init
@@ -142,7 +142,7 @@ Hey, is Kafka up and running?
 
 ## YARN
 
-The YARN ResourceManager UI can be accessed by [http://hadoop-1:8088](http://hadoop-1:8088), from there you can navigate to your application .
+The YARN ResourceManager UI can be accessed by [http://192.168.10.11:8088](http://192.168.10.11:8088), from there you can navigate to your application .
 
 ![YARN](doc/yarn.png)
 
