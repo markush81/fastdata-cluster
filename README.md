@@ -211,5 +211,5 @@ Submit a job:
 - [yarn-default.xml](https://hadoop.apache.org/docs/r2.8.0/hadoop-yarn/hadoop-yarn-common/yarn-default.xml)
 - [core-default.xml](https://hadoop.apache.org/docs/r2.8.0/hadoop-project-dist/hadoop-common/core-default.xml)
 - [hdfs-default.xml](https://hadoop.apache.org/docs/r2.8.0/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml)
-- [Spark Documentation](https://spark.apache.org/docs/2.1.0/)
-- [Apache Cassandra Documentation 3.9](http://cassandra.apache.org/doc/3.9/)
+- [Spark Documentation](https://spark.apache.org/docs/latest/)
+- [Apache Cassandra Documentation](http://cassandra.apache.org/doc/latest/)
