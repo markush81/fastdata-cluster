@@ -18,8 +18,7 @@ In case you need a local cluster providing Kafka, Cassandra and Spark you're at 
 * The VMs take approx 18 GB of RAM, so you should have more than that.
 
 
-![Warning](doc/warning.png) Vagrant migh ask you for your admin password. The rational behing is, that `vagrant-hostsupdater` is used to have the vms available with their names in your network.
-
+:warning: Vagrant might ask you for your admin password. The reason behind is, that `vagrant-hostsupdater` is used to have the vms available with their names in your network.
 
 ## Init
 
