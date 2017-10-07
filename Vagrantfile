@@ -76,7 +76,7 @@ Vagrant.configure("2") do |config|
 
       if i == 1
         hadoop.vm.provision :ansible do |ansible|
-          ansible.limit = "hadoop-master,hadoop-slave"
+          ansible.limit = "hadoop-master,hadoop-slave,network"
           ansible.playbook = "ansible/cluster.yml"
           ansible.inventory_path = "ansible/inventories/vbox"
           ansible.raw_arguments  = [
