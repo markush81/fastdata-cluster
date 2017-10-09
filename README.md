@@ -172,11 +172,18 @@ cqlsh> CREATE TABLE sample.wordcount (
    ...     count bigint,
    ...     PRIMARY KEY (time));
 ```
+Create file indicator
+
+
+```bash
+hdfs dfs -touchz /tmp/StreamingSample.running
+```
 
 Next submit the application to YARN:
 
+
 ```bash
-spark-submit --master yarn --class org.mh.playground.spark.StreamingSample --conf spark.yarn.submit.waitAppCompletion=false --deploy-mode cluster --executor-memory 1G --num-executors 3 /vagrant/exchange/spark-playground-all.jar
+spark-submit --master yarn --class org.mh.playground.spark.StreamingSample --conf spark.yarn.submit.waitAppCompletion=false --deploy-mode cluster --executor-memory 1G --num-executors 3 /vagrant/exchange/spark-playground.jar
 ```
 
 Produce records into Kafka:
@@ -190,6 +197,13 @@ lucky:fastdata-cluster markus$ vagrant ssh kafka-1
 Finally it should look similar to this:
 
 ![Spark Streaming Applicaton Master](doc/spark-streaming.png)
+
+
+Stop job gracefully
+
+```bash
+hdfs dfs -rm /tmp/StreamingSample.running
+```
 
 ## Flink
 
