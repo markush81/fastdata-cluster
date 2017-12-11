@@ -4,17 +4,17 @@
 
 In case you need a local cluster providing Kafka, Cassandra and Spark you're at the right place.
 
-* [Apache Kafka 0.11.0.1](http://kafka.apache.org/0110/documentation.html)
+* [Apache Kafka 1.0.0](http://kafka.apache.org/10/documentation.html)
 * [Apache Spark 2.2.0](http://spark.apache.org/releases/spark-release-2-2-0.html)
 * [Apache Cassandra 3.11](http://cassandra.apache.org)
-* [Apache Hadoop 2.8.1](https://hadoop.apache.org/docs/r2.8.0/)
+* [Apache Hadoop 2.8.2](https://hadoop.apache.org/docs/r2.8.0/)
 * [Apache Flink 1.3.2](https://ci.apache.org/projects/flink/flink-docs-release-1.3)
 
 ## Prerequisites
 
-* [Vagrant](https://www.vagrantup.com) (tested with 2.0.0)
-* [VirtualBox](http://virtualbox.org) (tested with 5.1.28)
-* [Ansible](http://docs.ansible.com/ansible/index.html) (tested with 2.3.2.0)
+* [Vagrant](https://www.vagrantup.com) (tested with 2.0.1)
+* [VirtualBox](http://virtualbox.org) (tested with 5.2.2)
+* [Ansible](http://docs.ansible.com/ansible/index.html) (tested with 2.4.2.0)
 * The VMs take approx 18 GB of RAM, so you should have more than that.
 
 

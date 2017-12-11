@@ -1,5 +1,5 @@
 ---
-version: "0.11.0.1"
-kafka: kafka_2.11-{{ version }}
+version: "1.0.0"
+kafka: kafka_2.12-{{ version }}
 file: "{{ kafka }}.tgz"
 url: http://mirror.dkd.de/apache/kafka/{{ version }}/{{ file }}
