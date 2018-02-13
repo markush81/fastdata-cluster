@@ -6,11 +6,11 @@ Wants=hdfs-namenode.service
 [Service]
 Type=forking
 User=vagrant
-Environment=JAVA_HOME={{ java_home }}
+Environment=JAVA_HOME=/usr/java/latest
 Environment=HADOOP_PREFIX={{ hadoop_home }}
 Environment=HADOOP_CONF_DIR={{ hadoop_home }}/etc/hadoop
-ExecStart={{ hadoop_home }}/sbin/hadoop-daemon.sh --config $HADOOP_CONF_DIR --script hdfs start datanode
-ExecStop={{ hadoop_home }}/sbin/hadoop-daemon.sh --config $HADOOP_CONF_DIR --script hdfs stop datanode
+ExecStart={{ hadoop_home }}/bin/hdfs --config $HADOOP_CONF_DIR --daemon start datanode
+ExecStop={{ hadoop_home }}/bin/hdfs --config $HADOOP_CONF_DIR --daemon stop datanode
 Restart=on-failure
 
 [Install]

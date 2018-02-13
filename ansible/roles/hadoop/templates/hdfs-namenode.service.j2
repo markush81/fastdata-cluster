@@ -4,12 +4,12 @@ After=network.target
 
 [Service]
 Type=forking
-Environment=JAVA_HOME={{ java_home }}
+Environment=JAVA_HOME=/usr/java/latest
 Environment=HADOOP_PREFIX={{ hadoop_home }}
 Environment=HADOOP_CONF_DIR={{ hadoop_home }}/etc/hadoop
 User=vagrant
-ExecStart={{ hadoop_home }}/sbin/hadoop-daemon.sh --config $HADOOP_CONF_DIR --script hdfs start namenode
-ExecStop={{ hadoop_home }}/sbin/hadoop-daemon.sh --config $HADOOP_CONF_DIR --script hdfs stop namenode
+ExecStart={{ hadoop_home }}/bin/hdfs --config $HADOOP_CONF_DIR --daemon start namenode
+ExecStop={{ hadoop_home }}/bin/hdfs --config $HADOOP_CONF_DIR --daemon stop namenode
 Restart=on-failure
 
 [Install]
