@@ -2,7 +2,7 @@
 - name: download {{ url }}
   run_once: true
   get_url:
-    url: "{{url}}"
+    url: "{{ url }}"
     dest: "{{ download }}/{{ file }}"
 
 - name: extract {{ download }}/{{ file }}

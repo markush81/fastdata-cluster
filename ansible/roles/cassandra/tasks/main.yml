@@ -2,7 +2,7 @@
 - name: download {{ url }}
   run_once: true
   get_url:
-    url: "{{url}}"
+    url: "{{ url }}"
     dest: "{{ download }}/{{ file }}"
 
 - name: extract {{ download }}/{{ file }}
@@ -34,7 +34,7 @@
     regexp: '^PATH'
     line: 'PATH=$PATH:{{ cassandra_home }}/bin'
 
-- name: copy server.properties {{ cassandra_home }}/conf/cassandra.yaml
+- name: copy cassandra.yaml {{ cassandra_home }}/conf/cassandra.yaml
   template:
     src: templates/cassandra.yaml.j2
     dest: "{{ cassandra_home }}/conf/cassandra.yaml"
