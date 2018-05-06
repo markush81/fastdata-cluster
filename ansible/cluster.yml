@@ -1,14 +1,7 @@
-- hosts: network
-  remote_user: vagrant
-  serial: 100%
-  roles:
-  - common
-
 - hosts: all
   remote_user: vagrant
   serial: 100%
   roles:
-  - common
   - java
 
 - hosts: zookeeper
