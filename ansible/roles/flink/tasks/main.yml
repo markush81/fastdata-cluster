@@ -2,7 +2,7 @@
 - name: download {{ url }}
   run_once: true
   get_url:
-    url: "{{url}}"
+    url: "{{ url }}"
     dest: "{{ download }}/{{ file }}"
 
 - name: extract {{ download }}/{{ file }}
@@ -38,12 +38,14 @@
   template:
     src: templates/stop-flink-yarn.sh.j2
     dest: "{{ flink_home }}/bin/stop-flink-yarn.sh"
+    mode: 0755
   register: flink_stop
 
 - name: install custom flink status
   template:
     src: templates/status-flink-yarn.sh.j2
     dest: "{{ flink_home }}/bin/status-flink-yarn.sh"
+    mode: 0755
 
 - name: install flink systemd unit file
   become: yes
@@ -53,19 +55,19 @@
     dest: "{{ system_units }}/flink.service"
   register: flink_service
 
-- name: check if flink already started
-  become: yes
-  become_user: vagrant
-  shell: "{{ flink_home }}/bin/status-flink-yarn.sh"
-  ignore_errors: yes
-  register: flink_status
+#- name: check if flink already started
+#  become: yes
+#  become_user: vagrant
+#  shell: "{{ flink_home }}/bin/status-flink-yarn.sh"
+#  ignore_errors: yes
+#  register: flink_status
 
-- name: restart flink
-  become: yes
-  become_method: sudo
-  when: flink_service.changed or flink_stop.changed or flink_status.rc != 0
-  systemd:
-    enabled: yes
-    state: restarted
-    name: flink
-    daemon_reload: yes
+#- name: restart flink
+#  become: yes
+#  become_method: sudo
+#  when: flink_service.changed or flink_stop.changed or flink_status.rc != 0
+#  systemd:
+#    enabled: yes
+#    state: restarted
+#    name: flink
+#    daemon_reload: yes

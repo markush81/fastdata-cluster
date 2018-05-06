@@ -3,7 +3,7 @@ Description=Kafka Service
 After=network.target
 
 [Service]
-Environment=JAVA_HOME={{ java_home }}
+Environment=JAVA_HOME=/usr/java/latest
 Type=forking
 User=vagrant
 ExecStart={{ kafka_home }}/bin/kafka-server-start.sh -daemon {{ kafka_home }}/config/server.properties

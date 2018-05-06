@@ -4,17 +4,17 @@
 
 In case you need a local cluster providing Kafka, Cassandra and Spark you're at the right place.
 
-* [Apache Kafka 1.0.0](http://kafka.apache.org/10/documentation.html)
-* [Apache Spark 2.2.0](http://spark.apache.org/releases/spark-release-2-2-0.html)
-* [Apache Cassandra 3.11](http://cassandra.apache.org)
-* [Apache Hadoop 2.8.2](https://hadoop.apache.org/docs/r2.8.0/)
-* [Apache Flink 1.3.2](https://ci.apache.org/projects/flink/flink-docs-release-1.3)
+* [Apache Kafka 1.1.0](http://kafka.apache.org/11/documentation.html)
+* [Apache Spark 2.3.0](http://spark.apache.org/releases/spark-release-2-3-0.html)
+* [Apache Cassandra 3.11.2](http://cassandra.apache.org)
+* [Apache Hadoop 3.1.0](https://hadoop.apache.org/docs/r3.1.0/)
+* **DISABLED, due to not being compatible to Hadoop 3.x.x** [Apache Flink 1.4.2](https://ci.apache.org/projects/flink/flink-docs-release-1.4)
 
 ## Prerequisites
 
-* [Vagrant](https://www.vagrantup.com) (tested with 2.0.1)
-* [VirtualBox](http://virtualbox.org) (tested with 5.2.2)
-* [Ansible](http://docs.ansible.com/ansible/index.html) (tested with 2.4.2.0)
+* [Vagrant](https://www.vagrantup.com) (tested with 2.1.0)
+* [VirtualBox](http://virtualbox.org) (tested with 5.2.10)
+* [Ansible](http://docs.ansible.com/ansible/index.html) (tested with 2.5.2)
 * The VMs take approx 18 GB of RAM, so you should have more than that.
 
 
@@ -58,8 +58,7 @@ The result if everything wents fine should be
 |Kafka Brokers|kafka-1:9092,kafka-2:9092,kafka-3:9092|
 |Cassandra Hosts|cassandra-1,cassandra-2,cassandra-3|
 |YARN Resource Manager|[http://hadoop-1:8088](http://hadoop-1:8088)|
-|HDFS Namenode UI|[http://hadoop-1:50070](http://hadoop-1:50070)|
-
+|HDFS Namenode UI|[http://hadoop-1:9870](http://hadoop-1:9870)|
 
 # Usage
 
@@ -70,7 +69,7 @@ The result if everything wents fine should be
 lucky:~ markus$ vagrant ssh cassandra-1
 [vagrant@cassandra-1 ~]$ cqlsh
 Connected to analytics at 127.0.0.1:9042.
-[cqlsh 5.0.1 | Cassandra 3.10 | CQL spec 3.4.4 | Native protocol v4]
+[cqlsh 5.0.1 | Cassandra 3.11.2 | CQL spec 3.4.4 | Native protocol v4]
 Use HELP for help.
 cqlsh>
 ```
@@ -151,7 +150,7 @@ The YARN ResourceManager UI can be accessed by [http://192.168.10.11:8088](http:
 
 ```bash
 lucky:~ markus$ vagrant ssh hadoop-1
-[vagrant@hadoop-1 ~]$ spark-submit --master yarn --class org.apache.spark.examples.SparkPi --deploy-mode cluster --driver-memory 512M --executor-memory 512M --num-executors 2 /usr/local/spark-2.1.1-bin-without-hadoop/examples/jars/spark-examples_2.11-2.1.1.jar 1000
+[vagrant@hadoop-1 ~]$ spark-submit --master yarn --class org.apache.spark.examples.SparkPi --deploy-mode cluster --driver-memory 512M --executor-memory 512M --num-executors 2 /usr/local/spark-2.3.0-bin-without-hadoop/examples/jars/spark-examples_2.11-2.3.0.jar 1000
 ```
 
 ### Own Spark Streaming Job
@@ -167,15 +166,13 @@ Connected to analytics at 127.0.0.1:9042.
 [cqlsh 5.0.1 | Cassandra 3.10 | CQL spec 3.4.4 | Native protocol v4]
 Use HELP for help.
 cqlsh> CREATE KEYSPACE sample WITH REPLICATION = { 'class' : 'NetworkTopologyStrategy', 'dc1' : 2  };
-cqlsh> CREATE TABLE sample.wordcount (
-   ...     time timestamp,
-   ...     count bigint,
-   ...     PRIMARY KEY (time));
+cqlsh> CREATE TABLE sample.wordcount(time timestamp, count bigint, PRIMARY KEY (time));
 ```
+
 Create file indicator
 
-
 ```bash
+lucky:fastdata-cluster markus$ vagrant ssh hadoop-1
 hdfs dfs -touchz /tmp/StreamingSample.running
 ```
 
@@ -207,6 +204,8 @@ hdfs dfs -rm /tmp/StreamingSample.running
 
 ## Flink
 
+**DISABLED, due to not being compatible to Hadoop 3.x.x**
+
 ### Flink Examples
 
 You can find Flink Web UI via YARN UI, e.g. [http://hadoop-1:8088/proxy/application_1492940607011_0001/#/overview](http://hadoop-1:8088/proxy/application_1492940607011_0001/#/overview)
@@ -214,15 +213,15 @@ You can find Flink Web UI via YARN UI, e.g. [http://hadoop-1:8088/proxy/applicat
 Submit a job:
 
 ```bash
-[vagrant@hadoop-1 ~]$ flink run /usr/local/flink-1.2.0/examples/streaming/WordCount.jar
+[vagrant@hadoop-1 ~]$ flink run /usr/local/flink-1.4.0/examples/streaming/WordCount.jar
 ```
 
 ![Flink](doc/flink.png)
 
 ## Further Links
 
-- [yarn-default.xml](https://hadoop.apache.org/docs/r2.8.0/hadoop-yarn/hadoop-yarn-common/yarn-default.xml)
-- [core-default.xml](https://hadoop.apache.org/docs/r2.8.0/hadoop-project-dist/hadoop-common/core-default.xml)
-- [hdfs-default.xml](https://hadoop.apache.org/docs/r2.8.0/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml)
+- [yarn-default.xml](https://hadoop.apache.org/docs/r3.1.0/hadoop-yarn/hadoop-yarn-common/yarn-default.xml)
+- [core-default.xml](https://hadoop.apache.org/docs/r3.1.0/hadoop-project-dist/hadoop-common/core-default.xml)
+- [hdfs-default.xml](https://hadoop.apache.org/docs/r3.1.0/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml)
 - [Spark Documentation](https://spark.apache.org/docs/latest/)
 - [Apache Cassandra Documentation](http://cassandra.apache.org/doc/latest/)

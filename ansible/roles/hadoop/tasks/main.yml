@@ -108,15 +108,6 @@
     dest: "{{ system_units }}/hdfs-namenode.service"
   register: hdfs_namenode_service
 
-- name: install hdfs-secondarynamenode systemd unit file
-  become: yes
-  become_method: sudo
-  when: inventory_hostname in groups['hadoop-master']
-  template:
-    src: templates/hdfs-secondarynamenode.service.j2
-    dest: "{{ system_units }}/hdfs-secondarynamenode.service"
-  register: hdfs_secondarynamenode_service
-
 - name: install hdfs-datanode systemd unit file
   become: yes
   become_method: sudo
@@ -144,7 +135,7 @@
   when: inventory_hostname in groups['hadoop-master']
   command: "{{ hadoop_home}}/bin/hdfs namenode -format"
   environment:
-    JAVA_HOME: "{{ java_home }}"
+    JAVA_HOME: "/usr/java/latest"
   args:
     creates: /tmp/hadoop-{{ ansible_user }}/dfs/name
 
@@ -167,17 +158,6 @@
     state: restarted
     name: hdfs-datanode
     daemon_reload: yes
-
-- name: restart hdfs-secondarynamenode
-  become: yes
-  become_method: sudo
-  when: inventory_hostname in groups['hadoop-master'] and (hadoop_env.changed or core_config.changed or hdfs_secondarynamenode_service.changed)
-  systemd:
-    enabled: yes
-    state: restarted
-    name: hdfs-secondarynamenode
-    daemon_reload: yes
-  register: hadoop_namenode_restart
 
 - name: restart yarn-resourcemanager
   become: yes

@@ -3,12 +3,12 @@ Description=YARN service
 After=network.target
 
 [Service]
-Environment=JAVA_HOME={{ java_home }}
+Environment=JAVA_HOME=/usr/java/latest
 Environment=HADOOP_CONF_DIR={{ hadoop_home }}/etc/hadoop
 Type=forking
 User=vagrant
-ExecStart={{ hadoop_home }}/sbin/yarn-daemon.sh --config $HADOOP_CONF_DIR start resourcemanager
-ExecStop={{ hadoop_home }}/sbin/yarn-daemon.sh --config $HADOOP_CONF_DIR stop resourcemanager
+ExecStart={{ hadoop_home }}/bin/yarn --config $HADOOP_CONF_DIR --daemon start resourcemanager
+ExecStop={{ hadoop_home }}/bin/yarn --config $HADOOP_CONF_DIR --daemon stop resourcemanager
 Restart=on-failure
 
 [Install]

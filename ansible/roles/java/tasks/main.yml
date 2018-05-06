@@ -2,22 +2,18 @@
 - name: download {{ url }}
   run_once: true
   get_url:
-    url: "{{url}}"
+    url: "{{ url }}"
     headers: 'Cookie:oraclelicense=accept-securebackup-cookie'
     dest: "{{ download }}/{{ file }}"
 
-- name: extract {{ download }}/{{ file }}
+- name: install {{ download }}/{{ file }}
   become: yes
   become_method: sudo
-  unarchive:
-    owner: root
-    group: root
-    src: "{{ download }}/{{ file }}"
-    dest: "{{ usr_local }}"
-    copy: no
-    creates: "{{ java_home }}"
+  yum:
+    name: "{{ download }}/{{ file }}"
+    state: present
 
-- name: set JAVA_HOME={{ java_home }}
+- name: set JAVA_HOME=/usr/java/latest
   become: yes
   become_method: sudo
   lineinfile:
@@ -25,14 +21,4 @@
     create: yes
     state: present
     regexp: '^export JAVA_HOME'
-    line: 'export JAVA_HOME={{ java_home }}'
-
-- name: set PATH=$PATH:{{ java_home }}/bin
-  become: yes
-  become_method: sudo
-  lineinfile:
-    dest: "{{ etc_profiles }}/java.sh"
-    create: yes
-    state: present
-    regexp: '^PATH'
-    line: 'PATH=$PATH:$JAVA_HOME/bin'
+    line: 'export JAVA_HOME=/usr/java/latest'

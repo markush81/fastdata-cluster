@@ -3,7 +3,7 @@ Description=Flink
 After=yarn-resourcemanager.service
 
 [Service]
-Environment=JAVA_HOME={{ java_home }}
+Environment=JAVA_HOME=/usr/java/latest
 Environment=HADOOP_PREFIX={{ usr_local }}/hadoop
 Environment=HADOOP_CONF_DIR={{ usr_local }}/hadoop/etc/hadoop
 Type=forking

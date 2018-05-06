@@ -1,6 +1,10 @@
 <?xml version="1.0"?>
 <configuration>
   <property>
+    <name>yarn.scheduler.capacity.maximum-applications</name>
+    <value>10000</value>
+  </property>
+  <property>
     <name>yarn.scheduler.capacity.maximum-am-resource-percent</name>
     <value>0.3</value>
   </property>
@@ -37,8 +41,26 @@
     <value>*</value>
   </property>
   <property>
+    <name>yarn.scheduler.capacity.root.default.acl_application_max_priority</name>
+    <value>*</value>
+  </property>
+   <property>
+     <name>yarn.scheduler.capacity.root.default.maximum-application-lifetime
+     </name>
+     <value>-1</value>
+   </property>
+   <property>
+     <name>yarn.scheduler.capacity.root.default.default-application-lifetime
+     </name>
+     <value>-1</value>
+   </property>
+  <property>
     <name>yarn.scheduler.capacity.node-locality-delay</name>
     <value>40</value>
+  </property>
+  <property>
+    <name>yarn.scheduler.capacity.rack-locality-additional-delay</name>
+    <value>-1</value>
   </property>
   <property>
     <name>yarn.scheduler.capacity.queue-mappings</name>
