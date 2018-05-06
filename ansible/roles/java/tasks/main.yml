@@ -6,12 +6,6 @@
     headers: 'Cookie:oraclelicense=accept-securebackup-cookie'
     dest: "{{ download }}/{{ file }}"
 
-- name: download {{ jmx_trans }}
-  run_once: true
-  get_url:
-    url: "{{ jmx_trans }}"
-    dest: "{{ download }}/jmxtrans-agent.jar"
-
 - name: install {{ download }}/{{ file }}
   become: yes
   become_method: sudo

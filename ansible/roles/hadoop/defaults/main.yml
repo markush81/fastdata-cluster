@@ -1,5 +1,5 @@
 ---
-version: "3.0.2"
+version: "3.1.0"
 hadoop: hadoop-{{ version }}
 file: "{{ hadoop }}.tar.gz"
 url: http://apache.mirrors.spacedump.net/hadoop/common/{{ hadoop }}/{{ file }}

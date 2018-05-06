@@ -7,8 +7,8 @@ In case you need a local cluster providing Kafka, Cassandra and Spark you're at 
 * [Apache Kafka 1.1.0](http://kafka.apache.org/11/documentation.html)
 * [Apache Spark 2.3.0](http://spark.apache.org/releases/spark-release-2-3-0.html)
 * [Apache Cassandra 3.11.2](http://cassandra.apache.org)
-* [Apache Hadoop 3.0.2](https://hadoop.apache.org/docs/r3.0.2/)
-* **DISABLED, due to incompabtility to Hadoop 3.x.x** [Apache Flink 1.4.2](https://ci.apache.org/projects/flink/flink-docs-release-1.4)
+* [Apache Hadoop 3.1.0](https://hadoop.apache.org/docs/r3.1.0/)
+* **DISABLED, due to not being compatible to Hadoop 3.x.x** [Apache Flink 1.4.2](https://ci.apache.org/projects/flink/flink-docs-release-1.4)
 
 ## Prerequisites
 
@@ -59,9 +59,6 @@ The result if everything wents fine should be
 |Cassandra Hosts|cassandra-1,cassandra-2,cassandra-3|
 |YARN Resource Manager|[http://hadoop-1:8088](http://hadoop-1:8088)|
 |HDFS Namenode UI|[http://hadoop-1:9870](http://hadoop-1:9870)|
-|Kibana|[http://mon-1:9600](http://mon-1:9600)|
-|Grafana|[http://mon-1:5060](http://mon-1:5060)|
-
 
 # Usage
 
@@ -72,7 +69,7 @@ The result if everything wents fine should be
 lucky:~ markus$ vagrant ssh cassandra-1
 [vagrant@cassandra-1 ~]$ cqlsh
 Connected to analytics at 127.0.0.1:9042.
-[cqlsh 5.0.1 | Cassandra 3.10 | CQL spec 3.4.4 | Native protocol v4]
+[cqlsh 5.0.1 | Cassandra 3.11.2 | CQL spec 3.4.4 | Native protocol v4]
 Use HELP for help.
 cqlsh>
 ```
@@ -153,7 +150,7 @@ The YARN ResourceManager UI can be accessed by [http://192.168.10.11:8088](http:
 
 ```bash
 lucky:~ markus$ vagrant ssh hadoop-1
-[vagrant@hadoop-1 ~]$ spark-submit --master yarn --class org.apache.spark.examples.SparkPi --deploy-mode cluster --driver-memory 512M --executor-memory 512M --num-executors 2 /usr/local/spark-2.2.1-bin-without-hadoop/examples/jars/spark-examples_2.11-2.2.1.jar 1000
+[vagrant@hadoop-1 ~]$ spark-submit --master yarn --class org.apache.spark.examples.SparkPi --deploy-mode cluster --driver-memory 512M --executor-memory 512M --num-executors 2 /usr/local/spark-2.3.0-bin-without-hadoop/examples/jars/spark-examples_2.11-2.3.0.jar 1000
 ```
 
 ### Own Spark Streaming Job
@@ -169,15 +166,13 @@ Connected to analytics at 127.0.0.1:9042.
 [cqlsh 5.0.1 | Cassandra 3.10 | CQL spec 3.4.4 | Native protocol v4]
 Use HELP for help.
 cqlsh> CREATE KEYSPACE sample WITH REPLICATION = { 'class' : 'NetworkTopologyStrategy', 'dc1' : 2  };
-cqlsh> CREATE TABLE sample.wordcount (
-   ...     time timestamp,
-   ...     count bigint,
-   ...     PRIMARY KEY (time));
+cqlsh> CREATE TABLE sample.wordcount(time timestamp, count bigint, PRIMARY KEY (time));
 ```
+
 Create file indicator
 
-
 ```bash
+lucky:fastdata-cluster markus$ vagrant ssh hadoop-1
 hdfs dfs -touchz /tmp/StreamingSample.running
 ```
 
@@ -209,6 +204,8 @@ hdfs dfs -rm /tmp/StreamingSample.running
 
 ## Flink
 
+**DISABLED, due to not being compatible to Hadoop 3.x.x**
+
 ### Flink Examples
 
 You can find Flink Web UI via YARN UI, e.g. [http://hadoop-1:8088/proxy/application_1492940607011_0001/#/overview](http://hadoop-1:8088/proxy/application_1492940607011_0001/#/overview)
@@ -223,8 +220,8 @@ Submit a job:
 
 ## Further Links
 
-- [yarn-default.xml](https://hadoop.apache.org/docs/r3.0.0/hadoop-yarn/hadoop-yarn-common/yarn-default.xml)
-- [core-default.xml](https://hadoop.apache.org/docs/r3.0.0/hadoop-project-dist/hadoop-common/core-default.xml)
-- [hdfs-default.xml](https://hadoop.apache.org/docs/r3.0.0/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml)
+- [yarn-default.xml](https://hadoop.apache.org/docs/r3.1.0/hadoop-yarn/hadoop-yarn-common/yarn-default.xml)
+- [core-default.xml](https://hadoop.apache.org/docs/r3.1.0/hadoop-project-dist/hadoop-common/core-default.xml)
+- [hdfs-default.xml](https://hadoop.apache.org/docs/r3.1.0/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml)
 - [Spark Documentation](https://spark.apache.org/docs/latest/)
 - [Apache Cassandra Documentation](http://cassandra.apache.org/doc/latest/)
