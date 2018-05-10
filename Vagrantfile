@@ -31,17 +31,6 @@ Vagrant.configure("2") do |config|
       kafka.vm.network :private_network, ip: "192.168.10.#{1 + i}", auto_config: true
 
       if i == KAFKA
-
-        kafka.vm.provision :ansible do |ansible|
-          ansible.compatibility_mode = "2.0"
-          ansible.limit = "network"
-          ansible.playbook = "ansible/network.yml"
-          ansible.inventory_path = "ansible/inventories/vbox"
-          ansible.raw_arguments  = [
-            "-vv"
-          ]
-        end
-
         kafka.vm.provision :ansible do |ansible|
           ansible.compatibility_mode = "2.0"
           ansible.limit = "zookeeper,kafka"
@@ -65,17 +54,6 @@ Vagrant.configure("2") do |config|
       cassandra.vm.network :private_network, ip: "192.168.10.#{KAFKA + 1 + i }", auto_config: true
 
       if i == CASSANDRA
-
-        cassandra.vm.provision :ansible do |ansible|
-          ansible.compatibility_mode = "2.0"
-          ansible.limit = "network"
-          ansible.playbook = "ansible/network.yml"
-          ansible.inventory_path = "ansible/inventories/vbox"
-          ansible.raw_arguments  = [
-            "-vv"
-          ]
-        end
-
         cassandra.vm.provision :ansible do |ansible|
           ansible.compatibility_mode = "2.0"
           ansible.limit = "cassandra"
