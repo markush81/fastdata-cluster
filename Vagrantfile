@@ -33,6 +33,16 @@ Vagrant.configure("2") do |config|
       if i == KAFKA
         kafka.vm.provision :ansible do |ansible|
           ansible.compatibility_mode = "2.0"
+          ansible.limit = "kafka"
+          ansible.playbook = "ansible/network.yml"
+          ansible.inventory_path = "ansible/inventories/vbox"
+          ansible.raw_arguments  = [
+            "-vv"
+          ]
+        end
+
+        kafka.vm.provision :ansible do |ansible|
+          ansible.compatibility_mode = "2.0"
           ansible.limit = "zookeeper,kafka"
           ansible.playbook = "ansible/cluster.yml"
           ansible.inventory_path = "ansible/inventories/vbox"
@@ -57,6 +67,16 @@ Vagrant.configure("2") do |config|
         cassandra.vm.provision :ansible do |ansible|
           ansible.compatibility_mode = "2.0"
           ansible.limit = "cassandra"
+          ansible.playbook = "ansible/network.yml"
+          ansible.inventory_path = "ansible/inventories/vbox"
+          ansible.raw_arguments  = [
+            "-vv"
+          ]
+        end
+
+        cassandra.vm.provision :ansible do |ansible|
+          ansible.compatibility_mode = "2.0"
+          ansible.limit = "cassandra"
           ansible.playbook = "ansible/cluster.yml"
           ansible.inventory_path = "ansible/inventories/vbox"
           ansible.raw_arguments  = [
@@ -77,10 +97,9 @@ Vagrant.configure("2") do |config|
       hadoop.vm.network :private_network, ip: "192.168.10.#{KAFKA + CASSANDRA + 1 + i}", auto_config: true
 
       if i == 1
-
         hadoop.vm.provision :ansible do |ansible|
           ansible.compatibility_mode = "2.0"
-          ansible.limit = "network"
+          ansible.limit = "kafka,cassandra,hadoop-master,hadoop-slave"
           ansible.playbook = "ansible/network.yml"
           ansible.inventory_path = "ansible/inventories/vbox"
           ansible.raw_arguments  = [

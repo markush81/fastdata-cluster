@@ -25,9 +25,3 @@ hadoop-1
 
 [flink]
 hadoop-1
-
-[network:children]
-kafka
-cassandra
-hadoop-master
-hadoop-slave
