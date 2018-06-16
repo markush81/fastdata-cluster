@@ -127,7 +127,6 @@ Topic:sample	PartitionCount:6	ReplicationFactor:2	Configs:
 
 ```bash
 [vagrant@kafka-1 ~]$ kafka-console-producer.sh --broker-list kafka-1:9092,kafka-3:9092 --topic sample
-[2017-04-22 15:27:41,035] WARN Removing server kafka-1::9092 from bootstrap.servers as DNS resolution failed for kafka-1: (org.apache.kafka.clients.ClientUtils)
 Hey, is Kafka up and running?
 ```
 
