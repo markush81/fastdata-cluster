@@ -3,7 +3,8 @@
   run_once: true
   get_url:
     url: "{{ url }}"
-    headers: 'Cookie:oraclelicense=accept-securebackup-cookie'
+    headers:
+      Cookie: 'oraclelicense=accept-securebackup-cookie'
     dest: "{{ download }}/{{ file }}"
 
 - name: install {{ download }}/{{ file }}

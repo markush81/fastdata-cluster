@@ -1,5 +1,6 @@
 - hosts: all
   remote_user: vagrant
+  ignore_unreachable: true
   serial: 100%
   roles:
   - common

@@ -39,4 +39,4 @@
   serial: 100%
   roles:
     - spark
-#    - flink
+    - flink

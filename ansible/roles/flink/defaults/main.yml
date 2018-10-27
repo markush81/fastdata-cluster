@@ -1,5 +1,5 @@
 ---
-version: 1.4.2
+version: 1.7-SNAPSHOT
 flink: flink-{{ version }}
-file: "{{ flink }}-bin-hadoop28-scala_2.11.tgz"
-url: http://ftp-stud.hs-esslingen.de/pub/Mirrors/ftp.apache.org/dist/flink/{{ flink }}/{{ file }}
+file: "{{ flink }}-bin-hadoop30-scala_2.11.tgz"
+url: https://github.com/markush81/flink/releases/download/v{{ version }}-hadoop-3.1.1/{{ file }}

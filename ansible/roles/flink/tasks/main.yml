@@ -55,19 +55,19 @@
     dest: "{{ system_units }}/flink.service"
   register: flink_service
 
-#- name: check if flink already started
-#  become: yes
-#  become_user: vagrant
-#  shell: "{{ flink_home }}/bin/status-flink-yarn.sh"
-#  ignore_errors: yes
-#  register: flink_status
+- name: check if flink already started
+  become: yes
+  become_user: vagrant
+  shell: "{{ flink_home }}/bin/status-flink-yarn.sh"
+  ignore_errors: yes
+  register: flink_status
 
-#- name: restart flink
-#  become: yes
-#  become_method: sudo
-#  when: flink_service.changed or flink_stop.changed or flink_status.rc != 0
-#  systemd:
-#    enabled: yes
-#    state: restarted
-#    name: flink
-#    daemon_reload: yes
+- name: restart flink
+  become: yes
+  become_method: sudo
+  when: flink_service.changed or flink_stop.changed or flink_status.rc != 0
+  systemd:
+    enabled: yes
+    state: restarted
+    name: flink
+    daemon_reload: yes

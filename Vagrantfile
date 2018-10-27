@@ -33,7 +33,7 @@ Vagrant.configure("2") do |config|
       if i == KAFKA
         kafka.vm.provision :ansible do |ansible|
           ansible.compatibility_mode = "2.0"
-          ansible.limit = "kafka"
+          ansible.limit = "kafka,cassandra,hadoop-master,hadoop-slave"
           ansible.playbook = "ansible/network.yml"
           ansible.inventory_path = "ansible/inventories/vbox"
           ansible.raw_arguments  = [
@@ -66,7 +66,7 @@ Vagrant.configure("2") do |config|
       if i == CASSANDRA
         cassandra.vm.provision :ansible do |ansible|
           ansible.compatibility_mode = "2.0"
-          ansible.limit = "cassandra"
+          ansible.limit = "kafka,cassandra,hadoop-master,hadoop-slave"
           ansible.playbook = "ansible/network.yml"
           ansible.inventory_path = "ansible/inventories/vbox"
           ansible.raw_arguments  = [
