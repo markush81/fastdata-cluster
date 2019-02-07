@@ -4,17 +4,17 @@
 
 In case you need a local cluster providing Kafka, Cassandra and Spark you're at the right place.
 
-* [Apache Kafka 2.0.0](http://kafka.apache.org/20/documentation.html)
-* [Apache Spark 2.3.2](http://spark.apache.org/releases/spark-release-2-3-2.html)
+* [Apache Kafka 2.1.0](http://kafka.apache.org/21/documentation.html)
+* [Apache Spark 2.4.0](http://spark.apache.org/releases/spark-release-2-4-0.html)
 * [Apache Cassandra 3.11.3](http://cassandra.apache.org)
-* [Apache Hadoop 3.1.1](https://hadoop.apache.org/docs/r3.1.1/)
-* [Apache Flink 1.7-SNAPSHOT](https://ci.apache.org/projects/flink/flink-docs-release-1.7) (self-compiled against Hadoop 3.1.1)
+* [Apache Hadoop 3.1.2](https://hadoop.apache.org/docs/r3.1.2/)
+* [Apache Flink 1.7.1](https://ci.apache.org/projects/flink/flink-docs-release-1.7) (self-compiled against Hadoop 3.1.2)
 
 ## Prerequisites
 
-* [Vagrant](https://www.vagrantup.com) (tested with 2.1.2)
-* [VirtualBox](http://virtualbox.org) (tested with 5.2.20)
-* [Ansible](http://docs.ansible.com/ansible/index.html) (tested with 2.7.1)
+* [Vagrant](https://www.vagrantup.com) (tested with 2.2.3)
+* [VirtualBox](http://virtualbox.org) (tested with 6.0.4)
+* [Ansible](http://docs.ansible.com/ansible/index.html) (tested with 2.7.6)
 * The VMs take approx 18 GB of RAM, so you should have more than that.
 
 
@@ -63,7 +63,7 @@ The result if everything wents fine should be
 # Usage
 
 
-### Connect to Cassandra
+## Cassandra
 
 ```bash
 lucky:~ markus$ vagrant ssh cassandra-1
@@ -139,7 +139,7 @@ Hey, is Kafka up and running?
 
 ## YARN
 
-The YARN ResourceManager UI can be accessed by [http://192.168.10.11:8088](http://192.168.10.11:8088), from there you can navigate to your application .
+The YARN ResourceManager UI can be accessed by [http://hadoop-1:8088](http://hadoop-1:8088), from there you can navigate to your application .
 
 ![YARN](doc/yarn.png)
 
@@ -149,56 +149,7 @@ The YARN ResourceManager UI can be accessed by [http://192.168.10.11:8088](http:
 
 ```bash
 lucky:~ markus$ vagrant ssh hadoop-1
-[vagrant@hadoop-1 ~]$ spark-submit --master yarn --class org.apache.spark.examples.SparkPi --deploy-mode cluster --driver-memory 512M --executor-memory 512M --num-executors 2 /usr/local/spark-2.3.2-bin-without-hadoop/examples/jars/spark-examples_2.11-2.3.2.jar 1000
-```
-
-### Own Spark Streaming Job
-
-For running your own packages (e.g. from [Spark Playground](https://github.com/markush81/spark-playground/blob/master/doc/StreamingSample.md)), copy them to `./exchange` which is mapped inside to `/vagrant/exchange`:
-
-In order to run this example, prepare Cassandra first
-
-```bash
-lucky:fastdata-cluster markus$ vagrant ssh cassandra-1
-[vagrant@cassandra-1 ~]$ cqlsh
-Connected to analytics at 127.0.0.1:9042.
-[cqlsh 5.0.1 | Cassandra 3.10 | CQL spec 3.4.4 | Native protocol v4]
-Use HELP for help.
-cqlsh> CREATE KEYSPACE sample WITH REPLICATION = { 'class' : 'NetworkTopologyStrategy', 'dc1' : 2  };
-cqlsh> CREATE TABLE sample.wordcount(time timestamp, count bigint, PRIMARY KEY (time));
-```
-
-Create file indicator
-
-```bash
-lucky:fastdata-cluster markus$ vagrant ssh hadoop-1
-hdfs dfs -touchz /tmp/StreamingSample.running
-```
-
-Next submit the application to YARN:
-
-
-```bash
-spark-submit --master yarn --class org.mh.playground.spark.StreamingSample --conf spark.yarn.submit.waitAppCompletion=false --deploy-mode cluster --executor-memory 1G --num-executors 3 /vagrant/exchange/spark-playground.jar
-```
-
-Produce records into Kafka:
-
-```bash
-lucky:fastdata-cluster markus$ vagrant ssh kafka-1
-[vagrant@kafka-1 ~]$ kafka-producer-perf-test.sh --producer-props bootstrap.servers="kafka-1:9092,kafka-2:9092,kafka-3:9092" --topic sample --num-records 2000 --throughput 100 --record-size 256
-
-```
-
-Finally it should look similar to this:
-
-![Spark Streaming Applicaton Master](doc/spark-streaming.png)
-
-
-Stop job gracefully
-
-```bash
-hdfs dfs -rm /tmp/StreamingSample.running
+[vagrant@hadoop-1 ~]$ spark-submit --master yarn --class org.apache.spark.examples.SparkPi --deploy-mode cluster --driver-memory 512M --executor-memory 512M --num-executors 2 /usr/local/spark-2.4.0-bin-without-hadoop/examples/jars/spark-examples_2.11-2.4.0.jar 1000
 ```
 
 ## Flink
@@ -210,15 +161,15 @@ You can find Flink Web UI via YARN UI, e.g. http://hadoop-1:8088/proxy/applicati
 Submit a job:
 
 ```bash
-[vagrant@hadoop-1 ~]$ flink run /usr/local/flink-1.7-SNAPSHOT/examples/streaming/WordCount.jar
+[vagrant@hadoop-1 ~]$ flink run /usr/local/flink-1.7.1/examples/streaming/WordCount.jar
 ```
 
 ![Flink](doc/flink.png)
 
 ## Further Links
 
-- [yarn-default.xml](https://hadoop.apache.org/docs/r3.1.1/hadoop-yarn/hadoop-yarn-common/yarn-default.xml)
-- [core-default.xml](https://hadoop.apache.org/docs/r3.1.1/hadoop-project-dist/hadoop-common/core-default.xml)
-- [hdfs-default.xml](https://hadoop.apache.org/docs/r3.1.1/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml)
+- [yarn-default.xml](https://hadoop.apache.org/docs/r3.1.2/hadoop-yarn/hadoop-yarn-common/yarn-default.xml)
+- [core-default.xml](https://hadoop.apache.org/docs/r3.1.2/hadoop-project-dist/hadoop-common/core-default.xml)
+- [hdfs-default.xml](https://hadoop.apache.org/docs/r3.1.2/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml)
 - [Spark Documentation](https://spark.apache.org/docs/latest/)
 - [Apache Cassandra Documentation](http://cassandra.apache.org/doc/latest/)
