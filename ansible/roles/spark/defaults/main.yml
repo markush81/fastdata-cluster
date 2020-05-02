@@ -1,5 +1,5 @@
 ---
-version: 2.4.0
-spark: spark-{{ version }}-bin-without-hadoop
+version: 2.4.5
+spark: spark-{{ version }}-bin-without-hadoop #-scala-2.12
 file: "{{ spark }}.tgz"
 url: http://ftp-stud.hs-esslingen.de/pub/Mirrors/ftp.apache.org/dist/spark/spark-{{ version }}/{{ file }}

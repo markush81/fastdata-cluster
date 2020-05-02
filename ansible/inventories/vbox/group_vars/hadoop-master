@@ -1,3 +1,4 @@
 hadoop_home: "{{ usr_local }}/{{ hadoop }}"
 hadoop_conf: "{{ hadoop_home }}/etc/hadoop"
 hadoop_log_dir: "{{ hadoop_home }}/logs"
+java_package: ["java-1.8.0-openjdk"]

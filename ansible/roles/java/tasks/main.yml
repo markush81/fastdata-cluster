@@ -1,20 +1,12 @@
 ---
-- name: download {{ url }}
-  run_once: true
-  get_url:
-    url: "{{ url }}"
-    headers:
-      Cookie: 'oraclelicense=accept-securebackup-cookie'
-    dest: "{{ download }}/{{ file }}"
 
-- name: install {{ download }}/{{ file }}
+- name: install {{ java_package }}
   become: yes
-  become_method: sudo
   yum:
-    name: "{{ download }}/{{ file }}"
+    name: "{{ java_package }}"
     state: present
 
-- name: set JAVA_HOME=/usr/java/latest
+- name: set JAVA_HOME
   become: yes
   become_method: sudo
   lineinfile:
@@ -22,4 +14,4 @@
     create: yes
     state: present
     regexp: '^export JAVA_HOME'
-    line: 'export JAVA_HOME=/usr/java/latest'
+    line: "export JAVA_HOME=`java -XshowSettings:properties -version 2>&1 | sed '/^[[:space:]]*java\\.home/!d;s/^[[:space:]]*java\\.home[[:space:]]*=[[:space:]]*//'`"

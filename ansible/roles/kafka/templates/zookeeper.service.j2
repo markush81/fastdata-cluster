@@ -1,0 +1,14 @@
+[Unit]
+Description=Zookeeper Service
+After=network-online.target
+
+[Service]
+EnvironmentFile={{ kafka_home }}/zookeeper.environment
+Type=forking
+User=root
+ExecStart={{ kafka_home }}/bin/zookeeper-server-start.sh -daemon {{ kafka_home }}/config/zookeeper.properties
+ExecStop={{ kafka_home }}/bin/zookeeper-server-stop.sh
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

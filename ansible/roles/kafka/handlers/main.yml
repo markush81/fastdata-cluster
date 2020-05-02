@@ -1,0 +1,32 @@
+---
+
+- name: restart zookeeper service
+  become: yes
+  systemd:
+    enabled: yes
+    state: restarted
+    name: zookeeper
+    daemon_reload: yes
+  listen: "restart zookeeper"
+
+- name: wait until zookeeper has started
+  wait_for:
+    host: "{{ inventory_hostname }}"
+    port: 2181
+  listen: "restart zookeeper"
+
+- name: restart kafka service
+  become: yes
+  systemd:
+    enabled: yes
+    state: restarted
+    name: kafka
+    daemon_reload: yes
+  listen: "restart kafka"
+
+- name: wait until kafka PLAINTEXT has started
+  wait_for:
+    host: "{{ inventory_hostname }}"
+    port: 9092
+  listen: "restart kafka"
+  when: groups.kafka.index(inventory_hostname) != 0 #when initially setup the first broker will not start lonely

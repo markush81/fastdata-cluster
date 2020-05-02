@@ -12,10 +12,9 @@ Vagrant.configure("2") do |config|
     system "vagrant plugin install #{plugin}" unless Vagrant.has_plugin? plugin
   end
 
-  config.vm.box = "markush81/centos7-vbox-guestadditions"
+  config.vm.box = "markush81/centos8-vbox-guestadditions"
   config.vm.box_check_update = true
 
-  config.vm.synced_folder "download", "/vagrant/download", create: true
   config.vm.synced_folder "exchange", "/home/vagrant/exchange", create: true
   config.vm.synced_folder "ansible", "/home/vagrant/ansible", create: true
 
@@ -43,7 +42,7 @@ Vagrant.configure("2") do |config|
 
         kafka.vm.provision :ansible do |ansible|
           ansible.compatibility_mode = "2.0"
-          ansible.limit = "zookeeper,kafka"
+          ansible.limit = "kafka"
           ansible.playbook = "ansible/cluster.yml"
           ansible.inventory_path = "ansible/inventories/vbox"
           ansible.raw_arguments  = [

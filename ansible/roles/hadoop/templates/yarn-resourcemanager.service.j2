@@ -3,7 +3,7 @@ Description=YARN service
 After=network.target
 
 [Service]
-Environment=JAVA_HOME=/usr/java/latest
+Environment=JAVA_HOME={{ java_home }}
 Environment=HADOOP_CONF_DIR={{ hadoop_home }}/etc/hadoop
 Type=forking
 User=vagrant

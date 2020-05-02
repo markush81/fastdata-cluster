@@ -1,11 +1,11 @@
 [Unit]
 Description=Kafka Service
-After=network.target
+After=network-online.target
 
 [Service]
-Environment=JAVA_HOME=/usr/java/latest
+EnvironmentFile={{ kafka_home }}/kafka.environment
 Type=forking
-User=vagrant
+User=root
 ExecStart={{ kafka_home }}/bin/kafka-server-start.sh -daemon {{ kafka_home }}/config/server.properties
 ExecStop={{ kafka_home }}/bin/kafka-server-start.sh stop
 Restart=on-failure

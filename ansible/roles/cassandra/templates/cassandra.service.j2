@@ -3,13 +3,12 @@ Description=Cassandra Service
 After=network.target
 
 [Service]
-Environment=JAVA_HOME=/usr/java/latest
 Type=forking
 User=vagrant
 ExecStart={{ cassandra_home }}/bin/cassandra -R -p {{ cassandra_pid }}
 ExecStop=cat {{ cassandra_pid }} | kill
 Restart=on-failure
-TimeoutSec=120
+TimeoutSec=300
 
 [Install]
 WantedBy=multi-user.target

@@ -1,0 +1,29 @@
+---
+
+- name: copy server.properties {{ kafka_home }}/config/server.properties
+  become: yes
+  template:
+    src: templates/server.properties.j2
+    dest: "{{ kafka_home }}/config/server.properties"
+  notify: "restart kafka"
+
+- name: copy kafka.environment {{ kafka_home }}/kafka.environment
+  become: yes
+  template:
+    src: templates/kafka.environment.j2
+    dest: "{{ kafka_home }}/kafka.environment"
+  notify: "restart kafka"
+
+- name: create {{ kafka_log_dir }}
+  become: yes
+  file:
+    path: "{{ kafka_log_dir }}"
+    state: directory
+  notify: "restart kafka"
+
+- name: install kafka systemd unit file
+  become: yes
+  template:
+    src: templates/kafka.service.j2
+    dest: /etc/systemd/system/kafka.service
+  notify: "restart kafka"

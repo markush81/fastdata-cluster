@@ -3,61 +3,36 @@
   run_once: true
   get_url:
     url: "{{ url }}"
-    dest: "{{ download }}/{{ file }}"
+    dest: "/tmp/{{ file }}"
 
-- name: extract {{ download }}/{{ file }}
+- name: extract /tmp/{{ file }}
   become: yes
-  become_method: sudo
   unarchive:
-    src: "{{ download }}/{{ file }}"
-    dest: "{{ usr_local }}"
+    src: "/tmp/{{ file }}"
+    dest: /usr/local
     copy: no
+    owner: root
+    group: root
     creates: "{{ kafka_home }}"
 
-- name: set ownership on {{ kafka_home }}
+- name: link to /usr/local/kafka
   become: yes
-  become_method: sudo
   file:
-    path: "{{ kafka_home }}"
-    owner: vagrant
-    group: vagrant
-    recurse: yes
-    mode: 0755
+    src:  "{{ kafka_home }}"
+    dest: /usr/local/kafka
+    state: link
 
 - name: set PATH=$PATH:{{ kafka_home }}/bin
   become: yes
-  become_method: sudo
   lineinfile:
-    dest: "{{ etc_profiles }}/kafka.sh"
+    dest: /etc/profile.d/kafka.sh
     create: yes
     state: present
     regexp: '^PATH'
     line: 'PATH=$PATH:{{ kafka_home }}/bin'
 
-- name: copy server.properties {{ kafka_home }}/config/server.properties
-  template:
-    src: templates/server.properties.j2
-    dest: "{{ kafka_home }}/config/server.properties"
-  register: kafka_config
+- import_tasks: zookeeper.yml
+  tags: zookeeper
 
-- name: create {{ kafka_log_dir }}
-  file:
-    path: "{{ kafka_log_dir }}"
-    state: directory
-
-- name: install kafka systemd unit file
-  become: yes
-  become_method: sudo
-  template:
-    src: templates/kafka.service.j2
-    dest: "{{ system_units }}/kafka.service"
-  register: kafka_service
-
-- name: restart kafka
-  become: yes
-  become_method: sudo
-  when: kafka_config.changed or kafka_service.changed
-  systemd:
-    enabled: yes
-    state: restarted
-    name: kafka
+- import_tasks: kafka.yml
+  tags: kafka

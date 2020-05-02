@@ -4,15 +4,9 @@
   roles:
   - java
 
-- hosts: zookeeper
-  remote_user: vagrant
-  serial: 100%
-  roles:
-    - zookeeper
-
 - hosts: kafka
   remote_user: vagrant
-  serial: 100%
+  serial: 33%
   roles:
     - kafka
 

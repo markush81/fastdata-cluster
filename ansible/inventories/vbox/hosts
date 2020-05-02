@@ -3,10 +3,8 @@ kafka-1
 kafka-2
 kafka-3
 
-[kafka]
-kafka-1
-kafka-2
-kafka-3
+[kafka:children]
+zookeeper
 
 [cassandra]
 cassandra-1

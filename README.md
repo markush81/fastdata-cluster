@@ -4,17 +4,17 @@
 
 In case you need a local cluster providing Kafka, Cassandra and Spark you're at the right place.
 
-* [Apache Kafka 2.1.0](http://kafka.apache.org/21/documentation.html)
-* [Apache Spark 2.4.0](http://spark.apache.org/releases/spark-release-2-4-0.html)
-* [Apache Cassandra 3.11.3](http://cassandra.apache.org)
-* [Apache Hadoop 3.1.2](https://hadoop.apache.org/docs/r3.1.2/)
-* [Apache Flink 1.7.1](https://ci.apache.org/projects/flink/flink-docs-release-1.7) (self-compiled against Hadoop 3.1.2)
+* [Apache Kafka 2.5.0](http://kafka.apache.org/25/documentation.html)
+* [Apache Spark 2.4.5](http://spark.apache.org/releases/spark-release-2-4-5.html)
+* [Apache Cassandra 3.11.6](http://cassandra.apache.org)
+* [Apache Hadoop 3.2.1](https://hadoop.apache.org/docs/r3.2.1/)
+* [Apache Flink 1.10.0](https://ci.apache.org/projects/flink/flink-docs-release-1.10)
 
 ## Prerequisites
 
-* [Vagrant](https://www.vagrantup.com) (tested with 2.2.3)
-* [VirtualBox](http://virtualbox.org) (tested with 6.0.4)
-* [Ansible](http://docs.ansible.com/ansible/index.html) (tested with 2.7.6)
+* [Vagrant](https://www.vagrantup.com) (tested with 2.2.7)
+* [VirtualBox](http://virtualbox.org) (tested with 6.1.6)
+* [Ansible](http://docs.ansible.com/ansible/index.html) (tested with 2.9.7)
 * The VMs take approx 18 GB of RAM, so you should have more than that.
 
 
@@ -91,17 +91,18 @@ UN  192.168.10.10  82.36 KiB  256          62.0%             69ba4402-c1d5-450c-
 ## Zookeeper
 
 ```bash
-lucky:~ markus$ vagrant ssh kafka-1
-[vagrant@kafka-1 ~]$ zkCli.sh -server kafka-1:2181/
+[vagrant@kafka-1 ~]$ zookeeper-shell.sh kafka-1:2181/
 Connecting to kafka-1:2181/
-...
+Welcome to ZooKeeper!
+JLine support is disabled
 
 WATCHER::
 
 WatchedEvent state:SyncConnected type:None path:null
-[zk: zookeeper-1:2181,zookeeper-3:2181(CONNECTED) 0] ls /
-[cluster, controller, controller_epoch, brokers, zookeeper, admin, isr_change_notification, consumers, config]
-[zk: zookeeper-1:2181,zookeeper-3:2181(CONNECTED) 1]
+ls /
+[admin, brokers, cluster, config, consumers, controller, controller_epoch, isr_change_notification, latest_producer_id_block, log_dir_event_notification, zookeeper]
+ls /brokers/ids
+[0, 1, 2]
 
 ```
 
@@ -149,7 +150,7 @@ The YARN ResourceManager UI can be accessed by [http://hadoop-1:8088](http://had
 
 ```bash
 lucky:~ markus$ vagrant ssh hadoop-1
-[vagrant@hadoop-1 ~]$ spark-submit --master yarn --class org.apache.spark.examples.SparkPi --deploy-mode cluster --driver-memory 512M --executor-memory 512M --num-executors 2 /usr/local/spark-2.4.0-bin-without-hadoop/examples/jars/spark-examples_2.11-2.4.0.jar 1000
+[vagrant@hadoop-1 ~]$ spark-submit --master yarn --class org.apache.spark.examples.SparkPi --deploy-mode cluster --driver-memory 512M --executor-memory 512M --num-executors 2 /usr/local/spark-2.4.5-bin-without-hadoop/examples/jars/spark-examples_2.11-2.4.5.jar 1000
 ```
 
 ## Flink
@@ -161,15 +162,15 @@ You can find Flink Web UI via YARN UI, e.g. http://hadoop-1:8088/proxy/applicati
 Submit a job:
 
 ```bash
-[vagrant@hadoop-1 ~]$ flink run /usr/local/flink-1.7.1/examples/streaming/WordCount.jar
+[vagrant@hadoop-1 ~]$ flink run /usr/local/flink-1.10.0/examples/streaming/WordCount.jar
 ```
 
 ![Flink](doc/flink.png)
 
 ## Further Links
 
-- [yarn-default.xml](https://hadoop.apache.org/docs/r3.1.2/hadoop-yarn/hadoop-yarn-common/yarn-default.xml)
-- [core-default.xml](https://hadoop.apache.org/docs/r3.1.2/hadoop-project-dist/hadoop-common/core-default.xml)
-- [hdfs-default.xml](https://hadoop.apache.org/docs/r3.1.2/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml)
+- [yarn-default.xml](https://hadoop.apache.org/docs/r3.2.1/hadoop-yarn/hadoop-yarn-common/yarn-default.xml)
+- [core-default.xml](https://hadoop.apache.org/docs/r3.2.1/hadoop-project-dist/hadoop-common/core-default.xml)
+- [hdfs-default.xml](https://hadoop.apache.org/docs/r3.2.1/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml)
 - [Spark Documentation](https://spark.apache.org/docs/latest/)
 - [Apache Cassandra Documentation](http://cassandra.apache.org/doc/latest/)

@@ -27,6 +27,6 @@ clientPort=2181
 # Set to "0" to disable auto purge feature
 #autopurge.purgeInterval=1
 # Zookeeper Nodes
-{% for item in groups['zookeeper'] %}
+{% for item in groups['kafka'] %}
 server.{{ loop.index }}={{ item }}:2888:3888
 {% endfor %}

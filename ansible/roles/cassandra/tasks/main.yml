@@ -1,15 +1,21 @@
 ---
+
+- name: install python2
+  become: yes
+  yum:
+    name: "python2"
+    state: present
+
 - name: download {{ url }}
-  run_once: true
   get_url:
     url: "{{ url }}"
-    dest: "{{ download }}/{{ file }}"
+    dest: "/tmp/{{ file }}"
 
-- name: extract {{ download }}/{{ file }}
+- name: extract /tmp/{{ file }}
   become: yes
   become_method: sudo
   unarchive:
-    src: "{{ download }}/{{ file }}"
+    src: "/tmp/{{ file }}"
     dest: "{{ usr_local }}"
     copy: no
     creates: "{{ cassandra_home }}"

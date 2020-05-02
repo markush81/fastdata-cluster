@@ -20,6 +20,9 @@
 # The id of the broker. This must be set to a unique integer for each broker.
 broker.id={{ groups.kafka.index(inventory_hostname) }}
 
+# Disable auto topic creation, default value is true
+auto.create.topics.enable=false
+
 # Switch to enable topic deletion or not, default value is false
 #delete.topic.enable=true
 
@@ -86,7 +89,7 @@ num.recovery.threads.per.data.dir=1
 #log.flush.interval.messages=10000
 
 # The maximum amount of time a message can sit in a log before we force a flush
-#log.flush.interval.ms=1000
+log.flush.interval.ms=1000
 
 ############################# Log Retention Policy #############################
 
@@ -116,10 +119,7 @@ log.retention.check.interval.ms=300000
 # server. e.g. "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002".
 # You can also append an optional chroot string to the urls to specify the
 # root directory for all kafka znodes.
-zookeeper.connect={% for item in groups['zookeeper'] %}
-{{ item }}:2181,
-{% endfor %}
-
+zookeeper.connect={% for server in groups['zookeeper'] %}{% if loop.index > 1%},{% endif %}{{ server }}:2181{% endfor %}
 
 # Timeout in ms for connecting to zookeeper
 zookeeper.connection.timeout.ms=6000

@@ -3,3 +3,4 @@ cassandra_log_dir: "{{ cassandra_home }}/logs"
 cassandra_cluster: "analytics"
 cassandra_seeds: "cassandra-1, cassandra-3"
 cassandra_pid: "{{ cassandra_home }}/cassandra.pid"
+java_package: ["java-1.8.0-openjdk"]
