@@ -155,15 +155,34 @@ lucky:~ markus$ vagrant ssh hadoop-1
 
 ## Flink
 
-### Flink Examples
+### Flink Example Run
 
-You can find Flink Web UI via YARN UI, e.g. http://hadoop-1:8088/proxy/application_1492940607011_0001/#/overview
+#### Find Jobmanager address:
 
-Submit a job:
+Get applicationId from [http://hadoop-1:8088](http://hadoop-1:8088).
 
 ```bash
-[vagrant@hadoop-1 ~]$ flink run /usr/local/flink-1.10.0/examples/streaming/WordCount.jar
+[vagrant@hadoop-1 ~]$  HADOOP_CLASSPATH=$(hadoop classpath) yarn-session.sh -id application_1588423893250_0006
 ```
+
+Output
+
+```bash
+
+...
+Found Web Interface hadoop-1:38361 of application 'application_1588423893250_0006'.
+```
+
+#### Access Flink UI:
+
+http://hadoop-1:38361 (depending in your output).
+
+#### Submit a job:
+
+```bash
+[vagrant@hadoop-1 ~]$ flink run -m hadoop-1:38361 /usr/local/flink-1.10.0/examples/streaming/WordCount.jar
+```
+
 
 ![Flink](doc/flink.png)
 

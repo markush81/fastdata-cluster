@@ -4,8 +4,13 @@
   shell: "java -XshowSettings:properties -version 2>&1 | sed '/^[[:space:]]*java\\.home/!d;s/^[[:space:]]*java\\.home[[:space:]]*=[[:space:]]*//'"
   register: java_home_output
 
+- name: get hadoop_classpath
+  shell: "{{ usr_local }}/hadoop/bin/hadoop classpath"
+  register: hadoop_classpath_outout
+  
 - set_fact:
     java_home: "{{ java_home_output.stdout }}"
+    hadoop_classpath: "{{ hadoop_classpath_outout.stdout }}"
 
 - name: download {{ url }}
   get_url:

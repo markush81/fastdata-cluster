@@ -6,7 +6,7 @@ After=yarn-resourcemanager.service
 Environment=JAVA_HOME={{ java_home }}
 Environment=HADOOP_HOME={{ usr_local }}/hadoop
 Environment=HADOOP_CONF_DIR={{ usr_local }}/hadoop/etc/hadoop
-Environment=HADOOP_CLASSPATH=`hadoop classpath`
+Environment=HADOOP_CLASSPATH={{ hadoop_classpath }}
 Type=forking
 User=vagrant
 ExecStart={{ flink_home }}/bin/yarn-session.sh -d -n 3 -jm 768 -tm 768 -s 2
