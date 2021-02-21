@@ -6,7 +6,7 @@
 
 - hosts: kafka
   remote_user: vagrant
-  serial: 33%
+  serial: 66%
   roles:
     - kafka
 

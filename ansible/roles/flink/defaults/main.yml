@@ -1,6 +1,6 @@
 ---
-version: 1.10.0
+version: 1.12.1
 flink: flink-{{ version }}
-file: "{{ flink }}-bin-scala_2.12.tgz"
+file: "{{ flink }}-bin-scala_2.12.tgz"
 url: https://ftp-stud.hs-esslingen.de/pub/Mirrors/ftp.apache.org/dist/flink/{{ flink }}/{{ file }}
      
