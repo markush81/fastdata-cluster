@@ -1,5 +1,8 @@
 # Fast Data Cluster
 
+> **Warning**
+> Because this repo is based upon VirtualBox which isn't (and won't be) available vor Apple Silicon based Macs, i have to deprecated this repo.
+
 ## Content
 
 In case you need a local cluster providing Kafka, Cassandra and Spark you're at the right place.
