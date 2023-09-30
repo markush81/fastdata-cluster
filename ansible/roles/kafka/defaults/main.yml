@@ -2,4 +2,4 @@
 version: "2.7.0"
 kafka: kafka_2.13-{{ version }}
 file: "{{ kafka }}.tgz"
-url: http://mirror.dkd.de/apache/kafka/{{ version }}/{{ file }}
+url: http://archive.apache.org/dist/kafka/{{ version }}/{{ file }}
