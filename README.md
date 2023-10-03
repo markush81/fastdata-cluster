@@ -1,7 +1,9 @@
 # Fast Data Cluster
 
 > **Warning**
-> Because this repo is based upon VirtualBox which isn't (and won't be) available vor Apple Silicon based Macs, i have to deprecated this repo.
+> Because this repo is based upon VirtualBox which isn't available vor Apple Silicon based Macs, i have to deprecated this repo.
+>
+> 2023: there are [test builds](https://www.virtualbox.org/wiki/Testbuilds) of VirtualBox for Apple Silicon, but so far it is not stable enough.
 
 ## Content
 
